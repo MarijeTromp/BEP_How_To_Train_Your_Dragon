@@ -17,6 +17,7 @@ from search.a_star.a_star import AStar
 from search.abstract_search import SearchAlgorithm
 from search.brute.brute import Brute
 from search.gen_prog.vanilla_GP import VanillaGP
+from search.gen_prog.vanilla_GP_alternatives.vanilla_GP_reworked import VanillaGPReworked
 from search.metropolis_hastings.metropolis import MetropolisHasting
 from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n import RemoveNInsertN
 
@@ -235,6 +236,7 @@ class BatchRun:
             Brute: "brute",
             MCTS: "mcts",
             VanillaGP: "gp",
+            VanillaGPReworked: "gpr",
             RemoveNInsertN: "VLNS",
             AStar: "Astar",
         }
