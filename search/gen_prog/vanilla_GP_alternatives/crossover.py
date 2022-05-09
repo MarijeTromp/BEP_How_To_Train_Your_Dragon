@@ -180,3 +180,20 @@ def uniform_crossover(program_x, program_y):
     child_y = Program(updated_seq_y)
 
     return child_x, child_y
+
+
+# TODO: Uses n-point crossover for now, maybe change that?
+def queen_bee_crossover(gen):
+    i = 1
+    queen = gen[0]
+
+    children = []
+
+    while i < len(gen):
+        program = gen[i]
+        child_x, child_y = n_point_crossover(queen, program)
+        i += 1
+        children.append(child_x)
+        children.append(child_y)
+
+    return children
