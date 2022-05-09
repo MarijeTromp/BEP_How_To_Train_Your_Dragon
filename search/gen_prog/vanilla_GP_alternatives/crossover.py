@@ -96,3 +96,40 @@ def n_point_crossover(program_x, program_y):
     return child_x, child_y
 
 # ------------------------------------------------ End original code ------------------------------------------------
+
+
+def two_point_crossover(program_x, program_y):
+    seq_x = program_x.sequence
+    seq_y = program_y.sequence
+
+    if len(seq_x) == 0 or len(seq_x) == 1 or len(seq_y) == 0 or len(seq_y) == 1:
+        return program_x, program_y
+
+    crossover_point_x1 = pick_crossover_point(program_x)
+    crossover_point_x2 = pick_crossover_point(program_x)
+    crossover_point_y1 = pick_crossover_point(program_y)
+    crossover_point_y2 = pick_crossover_point(program_y)
+
+    while crossover_point_x1 == crossover_point_x2:
+        crossover_point_x2 = pick_crossover_point(program_x)
+
+    while crossover_point_y1 == crossover_point_y2:
+        crossover_point_y2 = pick_crossover_point(program_y)
+
+    if crossover_point_x1 > crossover_point_x2:
+        temp = crossover_point_x1
+        crossover_point_x1 = crossover_point_x2
+        crossover_point_x2 = temp
+
+    if crossover_point_y1 > crossover_point_y2:
+        temp = crossover_point_y1
+        crossover_point_y1 = crossover_point_y2
+        crossover_point_y2 = temp
+
+    updated_seq_x = seq_x[:crossover_point_x1 + 1] + seq_y[crossover_point_y1 + 1:crossover_point_y2 + 1] + seq_x[crossover_point_x2 + 1:]
+    updated_seq_y = seq_y[:crossover_point_y1 + 1] + seq_x[crossover_point_x1 + 1:crossover_point_x2 + 1] + seq_x[crossover_point_y2 + 1:]
+
+    child_x = Program(updated_seq_x)
+    child_y = Program(updated_seq_y)
+
+    return child_x, child_y
