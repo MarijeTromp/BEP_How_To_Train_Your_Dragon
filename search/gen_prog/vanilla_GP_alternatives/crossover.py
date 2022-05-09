@@ -133,3 +133,50 @@ def two_point_crossover(program_x, program_y):
     child_y = Program(updated_seq_y)
 
     return child_x, child_y
+
+# TODO: Seems to be VERY slow
+def uniform_crossover(program_x, program_y):
+    shortest = program_x.sequence
+    longest = program_y.sequence
+
+    if len(longest) < len(shortest):
+        temp = longest
+        longest = shortest
+        shortest = temp
+
+    min_length = len(shortest)
+    max_length = len(longest)
+
+    if (min_length <= 1):
+        return program_x, program_y
+
+    length_child_x = random.randint(min_length, max_length)
+    length_child_y = random.randint(min_length, max_length)
+
+    updated_seq_x = []
+    updated_seq_y = []
+
+    pointer = 0
+    while pointer < min_length:
+        rand = random.uniform(0, 1)
+        if rand < 0.5:
+            updated_seq_x += shortest[pointer:pointer + 1]
+            updated_seq_y += longest[pointer:pointer + 1]
+            pointer = pointer + 1
+        else:
+            updated_seq_x += longest[pointer:pointer + 1]
+            updated_seq_y += shortest[pointer:pointer + 1]
+            pointer = pointer + 1
+
+    count = pointer
+    while count < length_child_x:
+        updated_seq_x += longest[pointer:pointer + 1]
+
+    count = pointer
+    while count < length_child_y:
+        updated_seq_y += longest[pointer:pointer + 1]
+
+    child_x = Program(updated_seq_x)
+    child_y = Program(updated_seq_y)
+
+    return child_x, child_y
