@@ -87,7 +87,7 @@ def find_best_error(current_gen, example):
 
 def find_with_error(current_gen, current_gen_errors, error):
     programs_with_error = []
-    for i in range(len(current_gen_errors) - 1):
+    for i in range(len(current_gen_errors)):
         if current_gen_errors[i] == error:
             programs_with_error.append(current_gen[i])
     return programs_with_error
