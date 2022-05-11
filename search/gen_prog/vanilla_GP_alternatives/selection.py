@@ -1,4 +1,7 @@
+import copy
+
 from search.gen_prog.vanilla_GP_alternatives import general
+from search.gen_prog.vanilla_GP_alternatives import fitness
 
 import math
 import statistics
@@ -69,3 +72,47 @@ def selection_SUS(current_gen_fitness):
     return intermediate_gen
 
 # ------------------------------------------------ End original code ------------------------------------------------
+
+
+def find_best_error(current_gen, example):
+    best = float("inf")
+    current_gen_errors = []
+    for program in current_gen:
+        error = fitness.program_error_example(program, example)
+        current_gen_errors.append(error)
+        if error < best:
+            best = error
+    return (best, current_gen_errors)
+
+
+def find_with_error(current_gen, current_gen_errors, error):
+    programs_with_error = []
+    for i in range(len(current_gen_errors) - 1):
+        if current_gen_errors[i] == error:
+            programs_with_error.append(current_gen[i])
+    return programs_with_error
+
+
+def lexicase(current_gen, training_examples):
+    examples = copy.deepcopy(training_examples)
+    random.shuffle(examples)
+
+    while (len(current_gen) > 1) and (len(examples) > 0):
+        example = examples.pop(0)
+        (best_error, current_gen_errors) = find_best_error(current_gen, example)
+        current_gen = find_with_error(current_gen, current_gen_errors, best_error)
+
+    if len(current_gen) == 1:
+        return current_gen[0]
+    else:
+        return random.choice(current_gen)
+
+
+def selection_lexicase(current_gen, training_examples):
+    N = len(current_gen)
+
+    intermediate_gen = []
+    for i in range(N):
+        intermediate_gen.append(lexicase(current_gen, training_examples))
+
+    return intermediate_gen
