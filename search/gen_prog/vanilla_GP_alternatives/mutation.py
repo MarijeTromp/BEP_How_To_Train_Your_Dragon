@@ -66,6 +66,29 @@ def one_mutation_mutation(program, token_functions):
             mutated_seq.append(general.draw_from(token_functions))
         else:
             mutated_seq.append(function)
+        i += 1
+
+    mutated_program = Program(mutated_seq)
+
+    return mutated_program
+
+
+def one_mutation_mutation_altered(program, token_functions):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index = random.randint(0, len(program_seq) + 1)
+    i = 0
+
+    for function in program_seq:
+        if i == mutation_index:
+            mutated_seq.append(general.draw_from(token_functions))
+        else:
+            mutated_seq.append(function)
+        i += 1
+
+    if mutation_index == (len(program_seq) + 1):
+        mutated_seq.append(general.draw_from(token_functions))
 
     mutated_program = Program(mutated_seq)
 
