@@ -52,3 +52,21 @@ def UMAD(program, token_functions):
     return new_program
 
 # ------------------------------------------------ End original code ------------------------------------------------
+
+
+def one_mutation_mutation(program, token_functions):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index = random.randint(0, len(program_seq) - 1)
+    i = 0
+
+    for function in program_seq:
+        if i == mutation_index:
+            mutated_seq.append(general.draw_from(token_functions))
+        else:
+            mutated_seq.append(function)
+
+    mutated_program = Program(mutated_seq)
+
+    return mutated_program
