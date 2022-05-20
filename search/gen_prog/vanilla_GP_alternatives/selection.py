@@ -116,3 +116,32 @@ def selection_lexicase(current_gen, training_examples):
         intermediate_gen.append(lexicase(current_gen, training_examples))
 
     return intermediate_gen
+
+
+def downsampled_lexicase(current_gen, training_examples):
+    examples = copy.deepcopy(training_examples)
+    random.shuffle(examples)
+
+    count = 0
+
+    # TODO: Is now downsampled to 5, maybe change to variable?
+    while (len(current_gen) > 1) and (len(examples) > 0) and (count < 5):
+        example = examples.pop(0)
+        (best_error, current_gen_errors) = find_best_error(current_gen, example)
+        current_gen = find_with_error(current_gen, current_gen_errors, best_error)
+        count += 1
+
+    if len(current_gen) == 1:
+        return current_gen[0]
+    else:
+        return random.choice(current_gen)
+
+
+def downsampled_lexicase_selection(current_gen, training_examples):
+    N = len(current_gen)
+
+    intermediate_gen = []
+    for i in range(N):
+        intermediate_gen.append(downsampled_lexicase(current_gen, training_examples))
+
+    return intermediate_gen
