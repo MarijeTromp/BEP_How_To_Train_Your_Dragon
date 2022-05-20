@@ -145,3 +145,14 @@ def downsampled_lexicase_selection(current_gen, training_examples):
         intermediate_gen.append(downsampled_lexicase(current_gen, training_examples))
 
     return intermediate_gen
+
+# TODO: For now it uses SUS and lexicase, maybe change this? Can also change the min size for training examples
+def combined_lexicase_selection(current_gen, training_examples, current_gen_fitness):
+    training_size = len(training_examples)
+
+    if training_size <= 4:
+        return selection_SUS(current_gen_fitness)
+    else:
+        return selection_lexicase(current_gen, training_examples)
+
+
