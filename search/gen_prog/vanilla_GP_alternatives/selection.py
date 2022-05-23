@@ -156,3 +156,28 @@ def combined_lexicase_selection(current_gen, training_examples, current_gen_fitn
         return selection_lexicase(current_gen, training_examples)
 
 
+def tournament_selection_selection(current_gen_fitness):
+    k = 5
+    N = len(current_gen_fitness)
+    gen = copy.deepcopy(current_gen_fitness)
+
+    intermediate_gen = []
+
+    for i in range(N):
+        random.shuffle(gen)
+        tournament = []
+        for j in range(k):
+            tournament.append(gen[j])
+        tournament.sort(reverse=True)
+        fitness = tournament[0][0]
+        equal_fitness = []
+
+        for program in tournament:
+            if(program[0] == fitness):
+                equal_fitness.append(program[1])
+            else:
+                break
+
+        intermediate_gen.append(random.choice(equal_fitness))
+
+    return intermediate_gen

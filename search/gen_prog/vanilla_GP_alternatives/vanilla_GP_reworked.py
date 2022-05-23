@@ -53,7 +53,7 @@ class VanillaGPReworked(SearchAlgorithm):
 
     def gen_selection(self, gen):
         # TODO: lexicase needs self.current_gen, self.training_examples
-        new_gen = selection.selection_lexicase(self.current_gen, self.training_examples)
+        new_gen = selection.tournament_selection_selection(gen)
         return new_gen
 
     def gen_crossover(self, gen):
