@@ -58,8 +58,7 @@ class VanillaGPReworked(SearchAlgorithm):
     def gen_crossover(self, gen):
         children = []
 
-        # TODO: If queen bee, do that instead of do something for every pair of programs
-
+        # TODO: If queen bee or three parent, do that instead of do something for every pair of programs
         # Iterate over the programs by 2 to pair them up
         i = 0
         while i < len(gen):

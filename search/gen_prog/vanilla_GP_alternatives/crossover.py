@@ -1,3 +1,5 @@
+import copy
+
 from search.gen_prog.vanilla_GP_alternatives import general
 
 import random, itertools
@@ -159,7 +161,7 @@ def uniform_crossover(program_x, program_y):
     pointer = 0
     while pointer < min_length:
         rand = random.uniform(0, 1)
-        if rand < 0.5:
+        if rand <= 0.5:
             updated_seq_x += shortest[pointer:pointer + 1]
             updated_seq_y += longest[pointer:pointer + 1]
             pointer = pointer + 1
@@ -195,5 +197,84 @@ def queen_bee_crossover(gen):
         i += 1
         children.append(child_x)
         children.append(child_y)
+
+    return children
+
+
+def three_parent_crossover(gen):
+    current_gen = copy.deepcopy(gen)
+    N = len(gen)
+
+    children = []
+
+    for i in range(N):
+        random.shuffle(current_gen)
+
+        parent1 = current_gen[0]
+        parent1_sequence = parent1.sequence
+        length_parent1 = len(parent1_sequence)
+
+        parent2 = current_gen[1]
+        parent2_sequence = parent2.sequence
+        length_parent2 = len(parent2_sequence)
+
+        parent3 = current_gen[2]
+        parent3_sequence = parent3.sequence
+        length_parent3 = len(parent3_sequence)
+
+        shortest = length_parent1
+        longest = length_parent1
+
+        if length_parent2 < shortest:
+            shortest = length_parent2
+        if length_parent2 > longest:
+            longest = length_parent2
+
+        if length_parent3 < shortest:
+            shortest = length_parent3
+        if length_parent3 > longest:
+            longest = length_parent3
+
+        length_child = random.randint(shortest, longest)
+        child = []
+
+        for j in range(length_child):
+            if j < length_parent1 and j < length_parent2 and j < length_parent3:
+                if parent1_sequence[j:j+1] == parent2_sequence[j:j+1]:
+                    child += parent1_sequence[j:j+1]
+                else:
+                    child += parent3_sequence[j:j + 1]
+
+            if j < length_parent1 and j < length_parent2 and j >= length_parent3:
+                rand = random.uniform(0, 1)
+                if rand <= 0.5:
+                    child += parent1_sequence[j:j + 1]
+                else:
+                    child += parent2_sequence[j:j + 1]
+
+            if j < length_parent1 and j >= length_parent2 and j < length_parent3:
+                rand = random.uniform(0, 1)
+                if rand <= 0.5:
+                    child += parent1_sequence[j:j + 1]
+                else:
+                    child += parent3_sequence[j:j + 1]
+
+            if j >= length_parent1 and j < length_parent2 and j < length_parent3:
+                rand = random.uniform(0, 1)
+                if rand <= 0.5:
+                    child += parent2_sequence[j:j + 1]
+                else:
+                    child += parent3_sequence[j:j + 1]
+
+            if j < length_parent1 and j >= length_parent2 and j >= length_parent3:
+                child += parent1_sequence[j:j + 1]
+
+            if j >= length_parent1 and j < length_parent2 and j >= length_parent3:
+                child += parent2_sequence[j:j + 1]
+
+            if j >= length_parent1 and j >= length_parent2 and j < length_parent3:
+                child += parent3_sequence[j:j + 1]
+
+        children.append(Program(child))
 
     return children
