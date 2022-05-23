@@ -181,3 +181,21 @@ def tournament_selection_selection(current_gen_fitness):
         intermediate_gen.append(random.choice(equal_fitness))
 
     return intermediate_gen
+
+
+def truncation_selection_selection(current_gen):
+    N = len(current_gen)
+    p = 0.25
+    select_quantity = int(N * p)
+    select_iterations = int(1/p)
+
+    intermediate_gen = []
+
+    gen = copy.deepcopy(current_gen)
+    gen.sort(reverse=True)
+
+    for i in range(select_iterations):
+        for j in range(select_quantity):
+            intermediate_gen.append(gen[j][1])
+
+    return intermediate_gen
