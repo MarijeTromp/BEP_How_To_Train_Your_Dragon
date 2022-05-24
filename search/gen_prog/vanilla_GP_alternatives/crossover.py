@@ -278,3 +278,64 @@ def three_parent_crossover(gen):
         children.append(Program(child))
 
     return children
+
+
+def add_occurrence(occurrences, gene):
+    flag = False
+    for (g, o) in occurrences:
+        if g == gene:
+            occurrences.remove((g, o))
+            occurrences.append((gene, o + 1))
+            flag = True
+            break
+
+    if not flag:
+        occurrences.append((gene, 1))
+    return occurrences
+
+
+def multiple_parent_crossover(gen):
+    current_gen = copy.deepcopy(gen)
+    N = len(gen)
+    k = 5
+
+    children = []
+
+    for i in range(N):
+        random.shuffle(current_gen)
+
+        parents_sequences = []
+        parents_lengths = []
+        for j in range(k):
+            curr = current_gen[j].sequence
+            parents_sequences.append(curr)
+            parents_lengths.append(len(curr))
+        shortest = min(parents_lengths)
+        longest = max(parents_lengths)
+
+        length_child = random.randint(shortest, longest)
+        child = []
+
+        for j in range(length_child):
+            current_gen_occurrences = []
+            for x in range(k):
+                parent = parents_sequences[x]
+                if j < len(parent):
+                    occ = copy.deepcopy(current_gen_occurrences)
+                    gene = parent[j:j + 1]
+                    current_gen_occurrences = add_occurrence(current_gen_occurrences, gene)
+
+            most = 0
+            gene_most = None
+            for (g, o) in current_gen_occurrences:
+                if o > most:
+                    most = o
+                    gene_most = g
+            child += gene_most
+
+        children.append(Program(child))
+
+    return children
+
+
+
