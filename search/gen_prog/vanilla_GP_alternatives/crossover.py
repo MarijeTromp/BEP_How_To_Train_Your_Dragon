@@ -338,4 +338,69 @@ def multiple_parent_crossover(gen):
     return children
 
 
+# TODO: Check implementation
+def random_cross_two_programs(program_x, program_y):
+    program_x_sequence = program_x.sequence
+    length_program_x = len(program_x_sequence)
+
+    program_y_sequence = program_y.sequence
+    length_program_y = len(program_y_sequence)
+
+    shortest = min([length_program_x, length_program_y])
+    longest = max([length_program_x, length_program_y])
+
+    total_length = length_program_x + length_program_y
+    child_length = random.randint(shortest, longest)
+
+    # Randomize which parent goes starts first
+    rand = random.uniform(0, 1)
+    start_index_x  = 0
+    start_index_y = 0
+    end_index = 0
+    if rand <= 0.5:
+        start_index_y = random.randint(0, length_program_x)
+        end_index = max((length_program_x - 1), (start_index_y + length_program_y - 1))
+    else:
+        start_index_x = random.randint(0, length_program_y)
+        end_index = max((length_program_y - 1), (start_index_x + length_program_x - 1))
+
+    start_index_child = random.randint(0, end_index - child_length + 1)
+
+    child = []
+
+    for i in range(child_length):
+        index_child = i + start_index_child
+        if start_index_x <= index_child < (start_index_x + length_program_x) and start_index_y <= index_child < (start_index_y + length_program_y):
+            r = random.uniform(0, 1)
+            if r <= 0.5:
+                index = index_child - start_index_x
+                child += program_x_sequence[index:index + 1]
+            else:
+                index = index_child - start_index_y
+                child += program_y_sequence[index:index + 1]
+        elif start_index_x <= index_child < (start_index_x + length_program_x):
+            index = index_child - start_index_x
+            child += program_x_sequence[index:index + 1]
+        elif start_index_y <= index_child < (start_index_y + length_program_y):
+            index = index_child - start_index_y
+            child += program_y_sequence[index:index + 1]
+
+    return Program(child)
+
+
+def random_crossover(gen):
+    N = len(gen)
+
+    children = []
+    for i in range(int(N/2)):
+        program_x, program_y = gen[i], gen[i + 1]
+        child = random_cross_two_programs(program_x, program_y)
+        children.append(child)
+
+    for i in range(int(N/2)):
+        program_x, program_y = gen[i], gen[i + 1]
+        child = random_cross_two_programs(program_x, program_y)
+        children.append(child)
+
+    return children
 
