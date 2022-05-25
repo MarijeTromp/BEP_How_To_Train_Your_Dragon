@@ -96,6 +96,8 @@ def one_mutation_mutation_altered(program, token_functions):
 
     return mutated_program
 
+
+# TODO: Fix this
 def mutation_clock_mutation(gen, mutation_chance, token_functions):
     mutated_gen = []
     k = 1
@@ -118,6 +120,44 @@ def mutation_clock_mutation(gen, mutation_chance, token_functions):
         print("Program size: " + str(len(program_seq)) + " Mutation index k: " + str(k) + " Mutation index i: "
               + str(i) + " Step size to next mutation: " + str(mutation_index_i))
 
-
-
     return mutated_gen
+
+
+def interchanging_mutation(program):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index_first = random.randint(0, len(program_seq) - 1)
+    mutation_index_second = random.randint(0, len(program_seq) - 1)
+
+    if mutation_index_first > mutation_index_second:
+        temp = mutation_index_first
+        mutation_index_first = mutation_index_second
+        mutation_index_second = temp
+
+    i = 0
+    function_at_first = None
+    function_at_second = None
+
+    for function in program_seq:
+        if i == mutation_index_first:
+            function_at_first = function
+        if i == mutation_index_second:
+            function_at_second = function
+        i += 1
+
+    i = 0
+    for function in program_seq:
+        if not i == mutation_index_first and not i == mutation_index_second:
+            mutated_seq.append(function)
+        if i == mutation_index_first:
+            mutated_seq.append(function_at_second)
+        if i == mutation_index_second and not i == mutation_index_first:
+            mutated_seq.append(function_at_first)
+        i += 1
+
+    if not len(program_seq) == 1:
+        print("Before: " + str(program_seq) + " After: " + str(mutated_seq) + " Mutated indices: " + str(mutation_index_first) + " and " + str(mutation_index_second) + "\n")
+
+    return Program(mutated_seq)
+
