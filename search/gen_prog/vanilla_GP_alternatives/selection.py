@@ -74,6 +74,37 @@ def selection_SUS(current_gen_fitness):
 # ------------------------------------------------ End original code ------------------------------------------------
 
 
+def sum_fitness(current_gen):
+    total_fitness = 0
+    for (fit, _) in current_gen:
+        total_fitness += fit
+
+    return total_fitness
+
+
+def stochastic_universal_sampling(current_gen):
+    N = len(current_gen)
+    total_fitness = sum_fitness(current_gen)
+    mean = (1/N) * total_fitness
+    rand = random.uniform(0, mean)
+    pointers = []
+
+    for i in range(N):
+        pointers.append(rand + (i * mean))
+
+    return roulette_wheel_selection(current_gen, pointers)
+
+
+def roulette_wheel_selection(gen, pointers):
+    intermediate_gen = []
+    for p in pointers:
+        i = 0
+        while sum_fitness(gen[0:i + 1]) < p:
+            i += 1
+        intermediate_gen.append(gen[i][1])
+    return intermediate_gen
+
+
 def find_best_error(current_gen, example):
     best = float("inf")
     current_gen_errors = []
