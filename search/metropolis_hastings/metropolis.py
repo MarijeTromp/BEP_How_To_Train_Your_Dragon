@@ -133,6 +133,14 @@ class MutationFactory():
 
         return Mutation("add_random_token", operation)
 
+
+    def remove_last_token(self) -> Mutation:
+        def operation(pro: Program) -> Program:
+            return Program(pro.sequence[:len(pro.sequence)-1])
+
+        return Mutation("remove_last_token", operation)
+
+
     def remove_random_token(self) -> Mutation:
         def operation(pro: Program) -> Program:
             length = len(pro.sequence)
