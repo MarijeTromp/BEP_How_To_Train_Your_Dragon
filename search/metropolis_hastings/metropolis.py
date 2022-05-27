@@ -83,6 +83,7 @@ class MetropolisHasting(SearchAlgorithm):
                 cost += abs(nenv.distance(case.output_environment))
             solved = False
 
+            # 0.1 for rounding errors, all distance measures should return integer values
             if cost < 0.1:
                 solved = True
                 for case in examples:
@@ -130,7 +131,7 @@ class MutationFactory():
             rand_token = random.choice(list(trans_tokens))
             return Program(pro.sequence + [rand_token])
 
-        return Mutation("Append random token to the end of the program", operation)
+        return Mutation("add_random_token", operation)
 
     def remove_random_token(self) -> Mutation:
         def operation(pro: Program) -> Program:
@@ -140,7 +141,7 @@ class MutationFactory():
             idk = random.randrange(length)
             return Program(pro.sequence[:idk] + pro.sequence[idk + 1:])
 
-        return Mutation("Remove random token of the end of the program", operation)
+        return Mutation("remove_random_token", operation)
 
     def add_loop(self, bool_tokens, trans_tokens) -> Mutation:
         def operation(pro: Program) -> Program:
@@ -148,7 +149,7 @@ class MutationFactory():
             rand_token = random.choice(list(trans_tokens))
             return Program(pro.sequence + [LoopWhile(rand_bool, [rand_token])])
 
-        return Mutation("Add random loop to the end of the program", operation)
+        return Mutation("add_loop", operation)
 
     def add_if_statement(self, bool_tokens, trans_tokens) -> Mutation:
         def operation(pro: Program) -> Program:
@@ -157,10 +158,10 @@ class MutationFactory():
             rand_token2 = random.choice(list(trans_tokens))
             return Program(pro.sequence + [If(rand_bool, [rand_token], [rand_token2])])
 
-        return Mutation("Add random if to the end of the program", operation)
+        return Mutation("add_if_statement", operation)
 
     def start_over(self) -> Mutation:
         def operation(_: Program) -> Program:
             return Program([])
 
-        return Mutation("Start over", operation)
+        return Mutation("start_over", operation)
