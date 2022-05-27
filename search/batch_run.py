@@ -93,6 +93,7 @@ class BatchRun:
         self.debug_print("Average correct: {}".format(ave_cor))
         self.debug_print("Average not correct: {}".format(ave_ncor))
 
+        self.debug_print("Parameters: {}".format(self.search_algorithm.params))
         final = {
             "domain": self.domain,
             "files": str(self.files),

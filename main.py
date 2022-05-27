@@ -20,14 +20,16 @@ if __name__ == "__main__":
     domains = ["robot"]
 
     # For gridsearch on algorithm parameters
-    param_values = [
-        [10, 20, 50],  # add_token
-        [10, 20, 50],  # remove_token
-        [10, 20, 50],  # add_loop
-        [10, 20, 50],  # add_if_statement
-        [2, 10, 20]    # start_over
-    ]
-    param_grid_space = list(map(list, list(itertools.product(*param_values))))
+    param_search_space: dict = {
+        "alpha": [1, 1.25, 1.5],
+        "add_token": [10, 20, 50],
+        "remove_token": [10, 20, 50],
+        "add_loop": [10, 20, 50],
+        "add_if_statement": [10, 20, 50],
+        "start_over": [2, 10, 20]
+    }
+    param_keys, param_values = zip(*param_search_space.items())
+    param_grid_space = [dict(zip(param_keys, v)) for v in itertools.product(*param_values)]
 
     for domain in domains:
         results = []

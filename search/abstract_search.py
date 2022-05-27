@@ -14,8 +14,9 @@ from search.search_result import SearchResult
 class SearchAlgorithm:
     """Abstract interface for a program synthesis search algorithm."""
 
-    def __init__(self, time_limit_sec: float):
+    def __init__(self, time_limit_sec: float, params: dict = {}):
         self.time_limit_sec = time_limit_sec
+        self.params = params
         self._best_program = Program([])
         self.number_of_explored_programs = 0
         self.cost_per_iteration = [(0, float("inf"))]   # save (iteration_number, cost) when new best_program is found
