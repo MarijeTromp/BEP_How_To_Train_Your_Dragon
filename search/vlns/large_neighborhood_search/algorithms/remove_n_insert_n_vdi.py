@@ -10,11 +10,11 @@ from search.vlns.large_neighborhood_search.repair.insert_n_repair import InsertN
 
 class RemoveNInsertNVDI(LNS):
 
-    def __init__(self, inc_depth_after: int, time_limit=10, Ni_increment=0):
+    def __init__(self, inc_depth_after: int, time_limit=10, Ni_increment=0, init_temp = 0, cooling: float = 0):
         super().__init__(
             time_limit=time_limit,
 
-            accept=StochasticAccept(initial_temperature=1, cooling_factor=0.997),
+            accept = StochasticAccept(initial_temperature=init_temp, cooling_factor=cooling) if ((init_temp != 0) & (cooling != float(0))) else DeterministicAccept(),
             # accept=DeterministicAccept(),
 
             destroy=ExtractNDestroy(initial_max_n=3, max_max_n=3),
