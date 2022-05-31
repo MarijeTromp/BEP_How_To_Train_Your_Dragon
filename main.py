@@ -17,21 +17,20 @@ if __name__ == "__main__":
 
     # Settings
     time_limit = 10
-    domain = "string"
+    domain = "robot"
     index = int(sys.argv[1])
 
     algo = [
         #(Brute(time_limit), "Brute"),
-        #(RemoveNInsertN(time_limit), "LNS"),
-        #(RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
-        #(RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
-        #(RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
-        #(RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
-        #(RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
-        #(RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
-        (FluteBrute(time_limit, time_limit), "Flute_Brute_inf"),
-        (FluteBruteVDI(1000, time_limit, time_limit), "Flute_Brute_1000"),
-        (FluteBruteVDI(10000, time_limit, time_limit), "Flute_Brute_10000"),
+        (RemoveNInsertN(time_limit), "LNS"),
+        (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
+        (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
+        (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
+        (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
+        (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
+        (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
+        (RemoveNInsertNVDI(1000, time_limit, 100), "VDNS_1000_Ni100"),
+        (RemoveNInsertNVDI(3000, time_limit, 100), "VDNS_3000_Ni100"),
     ][index]
 
     ranges = {
@@ -52,7 +51,7 @@ if __name__ == "__main__":
 
             # Search algorithm to be used
             search_algorithm=algo[0],
-            file_name=algo[1],
+            file_name=algo[1] + "-" + time.strftime("%Y%m%d-%H%M%S"),
 
             # Prints out result when a test case is finished
             print_results=True,

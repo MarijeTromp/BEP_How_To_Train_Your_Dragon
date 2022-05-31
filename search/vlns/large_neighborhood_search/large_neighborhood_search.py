@@ -17,7 +17,7 @@ class LNS(SearchAlgorithm):
     time limit can be set."""
 
     def __init__(self, time_limit: float, accept: Accept, destroy: Destroy, repair: Repair, invent: Invent,
-                 increase_depth_after: int, debug: bool = False):
+                 increase_depth_after: int, debug: bool = False, Ni_increment: int = 0):
         super().__init__(time_limit)
 
         # Init given parameters
@@ -39,6 +39,7 @@ class LNS(SearchAlgorithm):
         self.iterations_since_last_best = 0
 
         self.stats = {}
+        self.Ni_increment = Ni_increment
 
     def setup(self, test_case: list[Example], trans_tokens: list[TransToken], bool_tokens: list[BoolToken]):
         self.invent.setup(trans_tokens, bool_tokens)
@@ -108,6 +109,9 @@ class LNS(SearchAlgorithm):
                 self.invent.increment_depth()
 
                 self.iterations_since_last_best = 0
+
+                #TODO: self.increase_depth_after = self.increase_depth_after + self.Ni_increment
+                self.increase_depth_after = self.increase_depth_after + self.Ni_increment
 
         # Accepted as new current solution
         if self.accept.accept(self.cost_current, c_temp, self.sol_current, x_temp):
