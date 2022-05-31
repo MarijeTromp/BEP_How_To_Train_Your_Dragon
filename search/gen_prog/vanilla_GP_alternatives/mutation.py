@@ -161,3 +161,76 @@ def interchanging_mutation(program):
 
     return Program(mutated_seq)
 
+
+def scramble_mutation(program):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index_first = random.randint(0, len(program_seq) - 1)
+    mutation_index_second = random.randint(0, len(program_seq) - 1)
+
+    if mutation_index_first > mutation_index_second:
+        temp = mutation_index_first
+        mutation_index_first = mutation_index_second
+        mutation_index_second = temp
+
+    temp = []
+
+    i = 0
+    for function in program_seq:
+        if mutation_index_first <= i <= mutation_index_second:
+            temp.append(function)
+        if i > mutation_index_second:
+            break
+        i += 1
+
+    random.shuffle(temp)
+
+    i = 0
+    pointer = 0
+    for function in program_seq:
+        if mutation_index_first <= i <= mutation_index_second:
+            mutated_seq.append(temp[pointer])
+            pointer += 1
+        else:
+            mutated_seq.append(function)
+        i += 1
+    return Program(mutated_seq)
+
+
+def reversing_mutation(program):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index_first = random.randint(0, len(program_seq) - 1)
+    mutation_index_second = random.randint(0, len(program_seq) - 1)
+
+    if mutation_index_first > mutation_index_second:
+        temp = mutation_index_first
+        mutation_index_first = mutation_index_second
+        mutation_index_second = temp
+
+    temp = []
+
+    i = 0
+    for function in program_seq:
+        if mutation_index_first <= i <= mutation_index_second:
+            temp.append(function)
+        if i > mutation_index_second:
+            break
+        i += 1
+
+    temp.reverse()
+
+    i = 0
+    pointer = 0
+    for function in program_seq:
+        if mutation_index_first <= i <= mutation_index_second:
+            mutated_seq.append(temp[pointer])
+            pointer += 1
+        else:
+            mutated_seq.append(function)
+        i += 1
+
+    print("\n" + str(program_seq) + "\n" + str(mutated_seq) + "\n" + "Indices: " + str(mutation_index_first) + ", " + str(mutation_index_second) + "\n")
+    return Program(mutated_seq)
