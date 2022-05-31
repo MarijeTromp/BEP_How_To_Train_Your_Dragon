@@ -14,8 +14,8 @@ class RemoveNInsertNVDI(LNS):
         super().__init__(
             time_limit=time_limit,
 
-            #accept=StochasticAccept(initial_temperature=1, cooling_factor=0.999),
-            accept=DeterministicAccept(),
+            accept=StochasticAccept(initial_temperature=1, cooling_factor=0.997),
+            # accept=DeterministicAccept(),
 
             destroy=ExtractNDestroy(initial_max_n=3, max_max_n=3),
 

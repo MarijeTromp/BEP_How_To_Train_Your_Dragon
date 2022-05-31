@@ -21,8 +21,8 @@ if __name__ == "__main__":
     index = int(sys.argv[1])
 
     algo = [
-        #(Brute(time_limit), "Brute"),
-        (RemoveNInsertN(time_limit), "LNS"),
+        # (Brute(time_limit), "Brute"),
+        # (RemoveNInsertN(time_limit), "LNS"),
         (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
         (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
         (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
