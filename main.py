@@ -33,6 +33,8 @@ if __name__ == "__main__":
         (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
         (RemoveNInsertNVDI(1000, time_limit, init_temp=1, cooling=0.997), "VDNS_1000_Stoch"),
         (RemoveNInsertNVDI(3000, time_limit, init_temp=1, cooling=0.997), "VDNS_3000_Stoch"),
+        (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
+        (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
     ][index]
 
     ranges = {

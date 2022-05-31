@@ -17,7 +17,7 @@ class LNS(SearchAlgorithm):
     time limit can be set."""
 
     def __init__(self, time_limit: float, accept: Accept, destroy: Destroy, repair: Repair, invent: Invent,
-                 increase_depth_after: int, debug: bool = False, Ni_increment: int = 0, best_improvement: int = 0):
+                 increase_depth_after: int, debug: bool = False, Ni_increment: int = 0, best_improvement: int = 1):
         super().__init__(time_limit)
 
         # Init given parameters
@@ -40,6 +40,7 @@ class LNS(SearchAlgorithm):
 
         self.stats = {}
         self.Ni_increment = Ni_increment
+        self.best_improvement = best_improvement
 
     def setup(self, test_case: list[Example], trans_tokens: list[TransToken], bool_tokens: list[BoolToken]):
         self.invent.setup(trans_tokens, bool_tokens)
@@ -65,7 +66,6 @@ class LNS(SearchAlgorithm):
         self.stats["explored_per_size_sequence"] = []
         self.cost_per_iteration = []
 
-    #TODO: implement best_improvement strategy
     #TODO: implement pruning method
     #TODO: automate token weights set
     #TODO: implement types of degree of destruction (increment, decrement)
@@ -78,20 +78,34 @@ class LNS(SearchAlgorithm):
         self.debug_print("Program ({}): {}".format(self.cost_current, self.sol_current))
         t_b = time.process_time()
 
-        # Destroy current solution
-        destroyed = self.destroy.destroy(self.sol_current)
-        t_d = time.process_time()
-        self.debug_print("Destroyed: {}".format(destroyed))
+        best_neighbor = self.sol_current
+        best_neighbor_cost = self.cost_current
 
-        # Repair destroyed solution into temporary solution
-        x_temp = self.repair.repair(destroyed)
-        t_r = time.process_time()
+        for i in range(self.best_improvement):
 
-        # Calculate cost of temporary solution
-        #c_temp = self.cost(test_case, x_temp)
-        c_temp = self.eff_cost(test_case, x_temp)
-        t_c = time.process_time()
-        self.debug_print("Repaired ({}): {}".format(c_temp, x_temp))
+            # Destroy current solution
+            destroyed = self.destroy.destroy(self.sol_current)
+            t_d = time.process_time()
+            self.debug_print("Destroyed: {}".format(destroyed))
+
+            # Repair destroyed solution into temporary solution
+            x_temp = self.repair.repair(destroyed)
+            t_r = time.process_time()
+
+            # Calculate cost of temporary solution
+            #c_temp = self.cost(test_case, x_temp)
+            c_temp = self.eff_cost(test_case, x_temp)
+            t_c = time.process_time()
+            self.debug_print("Repaired ({}): {}".format(c_temp, x_temp))
+
+            # Update the best found best neighbor based on cost improvement
+            if ((self.cost_current - best_neighbor_cost) < (self.cost_current - c_temp)):
+                best_neighbor = x_temp
+                best_neighbor_cost = c_temp
+
+        # set the temporary solution to the best found neighbor
+        x_temp = best_neighbor
+        c_temp = best_neighbor_cost
 
         # New best solution found
         if c_temp < self.cost_best:
