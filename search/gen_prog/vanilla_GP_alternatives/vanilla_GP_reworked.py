@@ -1,4 +1,5 @@
 # VANILLA GENETIC PROGRAMMING ALGORITHM
+import enum
 
 from search.gen_prog.vanilla_GP_alternatives import general
 from search.gen_prog.vanilla_GP_alternatives import fitness
@@ -20,9 +21,21 @@ from typing import List
 from math import inf
 
 
+class SelectionMethods(enum.Enum):
+    SUSOriginal = 1
+    SUS = 2
+    RWS = 3
+    Lexicase = 4
+    DownsampledLexicase = 5
+    CombinedLexicase = 6
+    Tournament = 7
+    Truncation = 8
+
+
 class VanillaGPReworked(SearchAlgorithm):
     # Static fields
     type = "UN"
+    selection_type = SelectionMethods.Truncation
     MAX_NUMBER_OF_GENERATIONS = 200
     MAX_TOKEN_FUNCTION_DEPTH = 5  # used in the invention of tokens
     training_examples = []  # training examples
@@ -52,7 +65,32 @@ class VanillaGPReworked(SearchAlgorithm):
         return population
 
     def gen_selection(self, gen):
-        new_gen = selection.selection_SUS(gen)
+        new_gen = []
+
+        if self.selection_type == SelectionMethods.SUSOriginal:
+            new_gen = selection.selection_SUS(gen)
+
+        elif self.selection_type == SelectionMethods.SUS:
+            new_gen = selection.stochastic_universal_sampling(gen)
+
+        elif self.selection_type == SelectionMethods.RWS:
+            new_gen = selection.roulette_wheel_selection(gen)
+
+        elif self.selection_type == SelectionMethods.Lexicase:
+            new_gen = selection.selection_lexicase(self.current_gen, self.training_examples)
+
+        elif self.selection_type == SelectionMethods.DownsampledLexicase:
+            new_gen = selection.downsampled_lexicase_selection(self.current_gen, self.training_examples)
+
+        elif self.selection_type == SelectionMethods.CombinedLexicase:
+            new_gen = selection.combined_lexicase_selection(self.current_gen, self.training_examples, gen)
+
+        elif self.selection_type == SelectionMethods.Tournament:
+            new_gen = selection.tournament_selection_selection(gen)
+
+        elif self.selection_type == SelectionMethods.Truncation:
+            new_gen = selection.truncation_selection_selection(gen)
+
         return new_gen
 
     def gen_crossover(self, gen):
