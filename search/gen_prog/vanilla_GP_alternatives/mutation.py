@@ -117,9 +117,6 @@ def mutation_clock_mutation(gen, mutation_chance, token_functions):
         k = round(mutation_index_k)
         i = i + round(mutation_index_i)
 
-        print("Program size: " + str(len(program_seq)) + " Mutation index k: " + str(k) + " Mutation index i: "
-              + str(i) + " Step size to next mutation: " + str(mutation_index_i))
-
     return mutated_gen
 
 
@@ -155,9 +152,6 @@ def interchanging_mutation(program):
         if i == mutation_index_second and not i == mutation_index_first:
             mutated_seq.append(function_at_first)
         i += 1
-
-    if not len(program_seq) == 1:
-        print("Before: " + str(program_seq) + " After: " + str(mutated_seq) + " Mutated indices: " + str(mutation_index_first) + " and " + str(mutation_index_second) + "\n")
 
     return Program(mutated_seq)
 
@@ -232,5 +226,4 @@ def reversing_mutation(program):
             mutated_seq.append(function)
         i += 1
 
-    print("\n" + str(program_seq) + "\n" + str(mutated_seq) + "\n" + "Indices: " + str(mutation_index_first) + ", " + str(mutation_index_second) + "\n")
     return Program(mutated_seq)
