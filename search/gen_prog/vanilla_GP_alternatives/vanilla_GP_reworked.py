@@ -43,10 +43,22 @@ class CrossoverMethods(enum.Enum):
     Random = 8
 
 
+class MutationMethods(enum.Enum):
+    Classical = 1
+    UMAD = 2
+    OneMutation = 3
+    AlteredOneMutation = 4
+    Interchanging = 5
+    Scramble = 6
+    Reversing = 7
+
+
 class VanillaGPReworked(SearchAlgorithm):
     # Static fields
-    selection_type = SelectionMethods.Truncation
+    selection_type = SelectionMethods.SUS
     crossover_type = CrossoverMethods.OnePoint
+    mutation_type = MutationMethods.Classical
+
     MAX_NUMBER_OF_GENERATIONS = 200
     MAX_TOKEN_FUNCTION_DEPTH = 5  # used in the invention of tokens
     training_examples = []  # training examples
@@ -145,10 +157,29 @@ class VanillaGPReworked(SearchAlgorithm):
 
     def gen_mutate(self, gen):
         mutated_gen = []
-        if (self.type == "O" or self.type == "N"):
-            mutated_gen = [mutation.classical_mutation(program, self.mutation_chance, self.token_functions) for program in gen]
-        else:
+
+        if self.mutation_type == MutationMethods.Classical:
+            mutated_gen = [mutation.classical_mutation(program, self.mutation_chance, self.token_functions) for program
+                           in gen]
+
+        elif self.mutation_type == MutationMethods.UMAD:
             mutated_gen = [mutation.UMAD(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.OneMutation:
+            mutated_gen = [mutation.one_mutation_mutation(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.AlteredOneMutation:
+            mutated_gen = [mutation.one_mutation_mutation_altered(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Interchanging:
+            mutated_gen = [mutation.interchanging_mutation(program) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Scramble:
+            mutated_gen = [mutation.scramble_mutation(program) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Reversing:
+            mutated_gen = [mutation.reversing_mutation(program) for program in gen]
+
         return mutated_gen
 
     # -- Breed Next Generation
