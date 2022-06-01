@@ -6,10 +6,13 @@ import random, itertools
 from common.prorgam import Program
 
 # ------------------------------------------------ Start original code ------------------------------------------------
+
+
 def pick_crossover_point(program):
     indices = range(0, len(program.sequence))
     chosen_index = general.draw_from(indices)
     return chosen_index
+
 
 def one_point_crossover(program_x, program_y):
     seq_x = program_x.sequence
@@ -31,6 +34,7 @@ def one_point_crossover(program_x, program_y):
     child_y = Program(updated_seq_y)
 
     return child_x, child_y
+
 
 def n_point_crossover(program_x, program_y):
     # Assumptions:

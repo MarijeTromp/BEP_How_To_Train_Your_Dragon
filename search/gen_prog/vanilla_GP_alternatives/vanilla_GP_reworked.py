@@ -1,4 +1,5 @@
 # VANILLA GENETIC PROGRAMMING ALGORITHM
+import enum
 
 from search.gen_prog.vanilla_GP_alternatives import general
 from search.gen_prog.vanilla_GP_alternatives import fitness
@@ -20,9 +21,22 @@ from typing import List
 from math import inf
 
 
+class CrossoverMethods(enum.Enum):
+    OnePoint = 1
+    NPoint = 2
+    TwoPoint = 3
+    Uniform = 4
+    QueenBee = 5
+    ThreeParent = 6
+    MultipleParent = 7
+    Random = 8
+
+
 class VanillaGPReworked(SearchAlgorithm):
     # Static fields
     type = "UN"
+    crossover_type = CrossoverMethods.OnePoint
+
     MAX_NUMBER_OF_GENERATIONS = 200
     MAX_TOKEN_FUNCTION_DEPTH = 5  # used in the invention of tokens
     training_examples = []  # training examples
@@ -58,21 +72,40 @@ class VanillaGPReworked(SearchAlgorithm):
     def gen_crossover(self, gen):
         children = []
 
-        return crossover.random_crossover(gen)
+        if self.crossover_type == CrossoverMethods.QueenBee:
+            children = crossover.queen_bee_crossover(gen)
 
-        # TODO: If queen bee or three parent, do that instead of do something for every pair of programs
-        # Iterate over the programs by 2 to pair them up
-        i = 0
-        while i < len(gen):
-            program_x, program_y = gen[i], gen[i + 1]
-            child_x, child_y = None, None
-            if (self.type == "O" or self.type == "U"):
-                child_x, child_y = crossover.one_point_crossover(program_x, program_y)
-            else:
-                child_x, child_y = crossover.n_point_crossover(program_x, program_y)
-            children.append(child_x)
-            children.append(child_y)
-            i += 2
+        elif self.crossover_type == CrossoverMethods.ThreeParent:
+            children = crossover.three_parent_crossover(gen)
+
+        elif self.crossover_type == CrossoverMethods.MultipleParent:
+            children = crossover.multiple_parent_crossover(gen)
+
+        elif self.crossover_type == CrossoverMethods.Random:
+            children = crossover.random_crossover(gen)
+
+        else:
+            i = 0
+            while i < len(gen):
+                program_x, program_y = gen[i], gen[i + 1]
+                child_x, child_y = None, None
+
+                if self.crossover_type == CrossoverMethods.OnePoint:
+                    child_x, child_y = crossover.one_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.NPoint:
+                    child_x, child_y = crossover.n_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.TwoPoint:
+                    child_x, child_y = crossover.two_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.Uniform:
+                    child_x, child_y = crossover.uniform_crossover(program_x, program_y)
+
+                children.append(child_x)
+                children.append(child_y)
+                i += 2
+
         return children
 
     def gen_mutate(self, gen):
