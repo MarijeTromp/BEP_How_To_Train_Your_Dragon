@@ -82,7 +82,9 @@ def sum_fitness(current_gen):
     return total_fitness
 
 
+# TODO: Is this correct? Also, see todo for RWS.
 def stochastic_universal_sampling(current_gen):
+    intermediate_gen = []
     N = len(current_gen)
     total_fitness = sum_fitness(current_gen)
     mean = (1/N) * total_fitness
@@ -92,16 +94,30 @@ def stochastic_universal_sampling(current_gen):
     for i in range(N):
         pointers.append(rand + (i * mean))
 
-    return roulette_wheel_selection(current_gen, pointers)
+    for pointer in pointers:
+        curr_sum = 0
+        for f, program in current_gen:
+            curr_sum += f
+            if not curr_sum < pointer:
+                intermediate_gen.append(program)
+                break
+    return intermediate_gen
 
 
-def roulette_wheel_selection(gen, pointers):
+# TODO: Change behaviour when fitness is inf?
+def roulette_wheel_selection(gen):
     intermediate_gen = []
-    for p in pointers:
-        i = 0
-        while sum_fitness(gen[0:i + 1]) < p:
-            i += 1
-        intermediate_gen.append(gen[i][1])
+    total_fitness = sum_fitness(gen)
+    N = len(gen)
+
+    for i in range(N):
+        pointer = random.uniform(0, total_fitness)
+        curr_sum = 0
+        for f, program in gen:
+            curr_sum += f
+            if not curr_sum < pointer:
+                intermediate_gen.append(program)
+                break
     return intermediate_gen
 
 
