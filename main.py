@@ -23,27 +23,28 @@ if __name__ == "__main__":
     algo = [
         # (Brute(time_limit), "Brute"),
         # (RemoveNInsertN(time_limit), "LNS"),
-        (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
+        [RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"],
         (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
-        (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
-        (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
-        (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
-        (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
-        (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
-        (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
-        (RemoveNInsertNVDI(1000, time_limit, init_temp=1, cooling=0.997), "VDNS_1000_Stoch"),
-        (RemoveNInsertNVDI(3000, time_limit, init_temp=1, cooling=0.997), "VDNS_3000_Stoch"),
-        (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
-        (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
-    ][index]
+        # (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
+        # (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
+        # (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
+        # (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
+        # (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
+        # (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
+        # (RemoveNInsertNVDI(1000, time_limit, init_temp=1, cooling=0.997), "VDNS_1000_Stoch"),
+        # (RemoveNInsertNVDI(3000, time_limit, init_temp=1, cooling=0.997), "VDNS_3000_Stoch"),
+        # (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
+        # (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
+    ]
 
     ranges = {
         "string": [range(1, 101), range(101, 201), range(201, 301), range(301, 328)],
         "robot": [[]],
         "pixel": [[i] for i in range(0, 10)],
     }
+    result = []
 
-    for r in ranges[domain]:
+    for alg in algo:
         result = BatchRun(
             # Task domain
             domain=domain,
@@ -54,8 +55,8 @@ if __name__ == "__main__":
             files=([], [], []),
 
             # Search algorithm to be used
-            search_algorithm=algo[0],
-            file_name=algo[1] + "-" + time.strftime("%Y%m%d-%H%M%S"),
+            search_algorithm=alg[0],
+            file_name=alg[1] + "-" + time.strftime("%Y%m%d-%H%M%S"),
 
             # Prints out result when a test case is finished
             print_results=True,
