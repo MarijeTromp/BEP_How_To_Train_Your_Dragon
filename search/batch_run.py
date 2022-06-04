@@ -3,6 +3,7 @@ import copy
 import json
 import os
 import time
+import numpy as np
 from collections import Iterable, Set
 from itertools import chain
 from multiprocessing import Pool
@@ -85,14 +86,6 @@ class BatchRun:
 
         keys = ["test_cost", "train_cost", "execution_time", "program_length", "number_of_explored_programs",
                 "number_of_iterations"]
-        ave_res = self._average(results, keys)
-        ave_cor = self._average(correct_results, keys)
-        ave_ncor = self._average(not_correct_results, keys)
-
-        self.debug_print("Average overall: {}".format(ave_res))
-        self.debug_print("Average correct: {}".format(ave_cor))
-        self.debug_print("Average not correct: {}".format(ave_ncor))
-        self.debug_print("Parameters: {}".format(self.search_algorithm.params))
 
         # Store stats and the best program
         final = {
@@ -100,12 +93,23 @@ class BatchRun:
             "params": self.search_algorithm.params,
             "files": str(self.files),
             "cases_solved": "{} / {} ({}%)".format(correct, s, p),
-            "average": ave_res,
-            "average_correct": ave_cor,
-            "average_failed": ave_ncor,
+            "average":              self._average(results, keys),
+            "average_correct":      self._average(correct_results, keys),
+            "average_failed":       self._average(not_correct_results, keys),
+            "variance":             self._variance(results, keys),
+            "variance_correct":     self._variance(correct_results, keys),
+            "variance_failed":      self._variance(not_correct_results, keys),
+            "covariance":           self._covariance(results, keys),
+            "covariance_correct":   self._covariance(correct_results, keys),
+            "covariance_failed":    self._covariance(not_correct_results, keys),
             "best_results": correct_results[-1] if correct > 0 else results[-1],
         }
         self._store_result(final)
+
+        self.debug_print("Parameters: {}".format(self.search_algorithm.params))
+        self.debug_print("Average overall: {}".format(final['average']))
+        self.debug_print("Average correct: {}".format(final['average_correct']))
+        self.debug_print("Average not correct: {}".format(final['average_failed']))
 
         return final
 
@@ -201,6 +205,25 @@ class BatchRun:
             for k in keys:
                 if d[k] != float('inf'):
                     res[k] += d[k] / len(dicts)
+
+        return res
+
+    @staticmethod
+    def _variance(dicts: list[dict], keys: list[str], avg: list[float]):
+        res = {k: 0 for k in keys}
+
+        for k in keys:
+            res[k] = np.var(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts))))
+
+        return res
+
+
+    @staticmethod
+    def _covariance(dicts: list[dict], keys: list[str]):
+        res = {k: 0 for k in keys}
+
+        for k in keys:
+            res[k] = float(np.cov(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts)))))
 
         return res
 
