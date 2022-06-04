@@ -12,6 +12,8 @@ from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n import R
 from search.batch_run import BatchRun
 from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n import RemoveNInsertN
 from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n_vdi import RemoveNInsertNVDI
+from search.vlns.large_neighborhood_search.accept.deterministic_accept import DeterministicAccept
+from search.vlns.large_neighborhood_search.accept.stochastic_accept import StochasticAccept
 
 if __name__ == "__main__":
 
@@ -24,17 +26,16 @@ if __name__ == "__main__":
         # (Brute(time_limit), "Brute"),
         # (RemoveNInsertN(time_limit), "LNS"),
         [RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"],
-        (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
+        # (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
         # (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
         # (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
         # (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
         # (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
         # (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
         # (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
-        # (RemoveNInsertNVDI(1000, time_limit, init_temp=1, cooling=0.997), "VDNS_1000_Stoch"),
-        # (RemoveNInsertNVDI(3000, time_limit, init_temp=1, cooling=0.997), "VDNS_3000_Stoch"),
         # (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
         # (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
+        [RemoveNInsertNVDI(1000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_1000_Stoch"],
     ]
 
     ranges = {
