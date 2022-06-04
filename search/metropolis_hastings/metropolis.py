@@ -9,6 +9,7 @@ import math
 
 from search.search_result import SearchResult
 
+random.seed(5099404)
 
 class Mutation():
     def __init__(self, name: str, fun: Callable[[Program], Program]):
@@ -25,6 +26,7 @@ class MetropolisHasting(SearchAlgorithm):
 
         # Default parameters
         mutation_params: dict = {
+            "type": "metropolis",
             "alpha": 1,
             "add_token_end": 0,
             "add_token_random": 0,
@@ -59,7 +61,11 @@ class MetropolisHasting(SearchAlgorithm):
         self.proposal_distribution.add_mutation(fac.remove_token_random(), self.params['remove_token_random'])
 
         self.proposal_distribution.add_mutation(fac.add_loop_end(bool_tokens, trans_tokens), self.params['add_loop_end'])
+        self.proposal_distribution.add_mutation(fac.add_loop_random(bool_tokens, trans_tokens), self.params['add_loop_random'])
+
         self.proposal_distribution.add_mutation(fac.add_if_statement_end(bool_tokens, trans_tokens), self.params['add_if_statement_end'])
+        self.proposal_distribution.add_mutation(fac.add_if_statement_random(bool_tokens, trans_tokens), self.params['add_if_statement_random'])
+
         self.proposal_distribution.add_mutation(fac.start_over(), self.params['start_over'])
 
     def iteration(self, examples: List[Example], trans_tokens, bool_tokens) -> bool:
@@ -124,7 +130,7 @@ class MetropolisHasting(SearchAlgorithm):
                     nenv = new_program.interp(case.input_environment)
                     solved = solved and nenv.correct(case.output_environment)
 
-            # Default is Metropolis
+            # Default is Random Walk - Metropolis
             ratio = math.exp(-alpha * cost) / math.exp(-alpha * ocost)
             if type == "metropolis_hastings":
                 ratio *= forward_transition / backward_transition

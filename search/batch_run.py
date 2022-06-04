@@ -62,7 +62,7 @@ class BatchRun:
                 # collect results sorted and in chunks to minimize communication overhead on HPC
                 for i, d in enumerate(pool.imap(self._test_case, self.test_cases, chunksize=10)):
                     self.debug_print(f"{self.search_algorithm.__class__.__name__} {i}: {d['file']}, test_cost: {d['test_cost']}, train_cost: {d['train_cost']}, time: {d['execution_time']}, length: {d['program_length']}, iterations: {d['number_of_iterations']}")
-                    self._store_result(d)
+                    # self._store_result(d)
                     results.append(d)
         else:
             for tc in self.test_cases:
@@ -92,16 +92,20 @@ class BatchRun:
         self.debug_print("Average overall: {}".format(ave_res))
         self.debug_print("Average correct: {}".format(ave_cor))
         self.debug_print("Average not correct: {}".format(ave_ncor))
-
         self.debug_print("Parameters: {}".format(self.search_algorithm.params))
+
+        # Store stats and the best program
         final = {
             "domain": self.domain,
+            "params": self.search_algorithm.params,
             "files": str(self.files),
+            "cases_solved": "{} / {} ({}%)".format(correct, s, p),
             "average": ave_res,
             "average_correct": ave_cor,
             "average_failed": ave_ncor,
-            "results": results,
+            "best_results": correct_results[-1] if correct > 0 else results[-1],
         }
+        self._store_result(final)
 
         return final
 
@@ -126,7 +130,7 @@ class BatchRun:
         return d
 
     def _init_store_system(self):
-        folder = "{}/results/{}".format(os.getcwd(), self.domain)
+        folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/qbhofstede')), self.domain)
 
         if not os.path.exists(folder):
             os.makedirs(folder)
