@@ -68,7 +68,6 @@ class LNS(SearchAlgorithm):
 
     #TODO: implement pruning method
     #TODO: automate token weights set
-    #TODO: implement types of degree of destruction (increment, decrement)
     def iteration(self, test_case: list[Example], tokens: list[EnvToken], bt) -> bool:
         if self.cost_best == 0:
             return False

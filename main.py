@@ -51,7 +51,7 @@ if __name__ == "__main__":
             # Iterables for files name. Use [] to use all values.
             # This runs all files adhering to format "2-*-[0 -> 10]"
             # Thus, ([], [], []) runs all files for a domain.
-            files=([], r, []),
+            files=([], [], []),
 
             # Search algorithm to be used
             search_algorithm=algo[0],

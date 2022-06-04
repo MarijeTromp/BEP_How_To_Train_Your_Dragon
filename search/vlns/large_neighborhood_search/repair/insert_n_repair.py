@@ -25,6 +25,7 @@ class InsertNRepair(Repair):
 
         seq = seqs[0]
 
+        # TODO: implement types of degree of reparation (increment, decrement)
         # Pick N, minimum of 1
         n = random.randint(1, self.max_n + 1)
 

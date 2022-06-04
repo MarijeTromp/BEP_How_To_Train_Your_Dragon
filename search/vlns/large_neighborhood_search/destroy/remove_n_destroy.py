@@ -27,6 +27,8 @@ class ExtractNDestroy(Destroy):
         self.max_n = self.initial_max_n
 
     def destroy(self, program: Program) -> list[list[EnvToken]]:
+        # TODO: implement types of degree of destruction (increment, decrement)
+
         # Pick N
         mn = min(self.max_n, len(program.sequence))
         n = random.randint(0, mn + 1)
