@@ -62,8 +62,9 @@ class BatchRun:
             with Pool(processes=os.cpu_count() - 1) as pool:
                 # collect results sorted and in chunks to minimize communication overhead on HPC
                 for i, d in enumerate(pool.imap(self._test_case, self.test_cases, chunksize=10)):
-                    self.debug_print(f"{self.search_algorithm.__class__.__name__} {i}: {d['file']}, test_cost: {d['test_cost']}, train_cost: {d['train_cost']}, time: {d['execution_time']}, length: {d['program_length']}, iterations: {d['number_of_iterations']}")
-                    # self._store_result(d)
+                    case_data = f"{self.search_algorithm.__class__.__name__} {i}: {d['file']}, test_cost: {d['test_cost']}, train_cost: {d['train_cost']}, time: {d['execution_time']}, length: {d['program_length']}, iterations: {d['number_of_iterations']}"
+                    self.debug_print(case_data)
+                    self._store_result({"test_case": i, "data": case_data})
                     results.append(d)
         else:
             for tc in self.test_cases:
@@ -99,9 +100,6 @@ class BatchRun:
             "variance":             self._variance(results, keys),
             "variance_correct":     self._variance(correct_results, keys),
             "variance_failed":      self._variance(not_correct_results, keys),
-            "covariance":           self._covariance(results, keys),
-            "covariance_correct":   self._covariance(correct_results, keys),
-            "covariance_failed":    self._covariance(not_correct_results, keys),
             "best_results": correct_results[-1] if correct > 0 else results[-1],
         }
         self._store_result(final)
@@ -209,23 +207,15 @@ class BatchRun:
         return res
 
     @staticmethod
-    def _variance(dicts: list[dict], keys: list[str], avg: list[float]):
+    def _variance(dicts: list[dict], keys: list[str]):
         res = {k: 0 for k in keys}
 
+        # Calculate the hypothetical population for each key using ddof=1
         for k in keys:
-            res[k] = np.var(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts))))
+            res[k] = np.var(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts))), ddof=1)
 
         return res
 
-
-    @staticmethod
-    def _covariance(dicts: list[dict], keys: list[str]):
-        res = {k: 0 for k in keys}
-
-        for k in keys:
-            res[k] = float(np.cov(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts)))))
-
-        return res
 
     @staticmethod
     def _get_parser(domain: str) -> Parser:
