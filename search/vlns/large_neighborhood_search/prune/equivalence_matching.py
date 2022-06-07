@@ -22,6 +22,7 @@ simple implementation:
 (IDEA: only prune on observational equivalence between direct neighbors)
 (NOTE: this would only have effect on situations in which no improvement is found,
 in which case the observationally equivalent neighbor would generally be chosen)
+(PRO: saves space, easy to implement. CON: only very superficially applies pruning)
 explore neighborhood:
 - i times
 - - get neighbor
@@ -32,6 +33,26 @@ explore neighborhood:
 - - - else (observationally equivalent) if *somechance*
 - - - - best neighbor = neighbor
 - ...continue with algorithm...
+
+medium implementation:
+(IDEA: compares the program's output states not only to predecessor's, but all states)
+(PRO: compares more efficiently. CON: could use a lot of space and time, unsure if too much pruning)
+explore neighborhood:
+- i times
+- - get neighbor
+- - get neighbor's output state
+- - if neighbor's cost < best neighbor's cost
+- - - if output state of best neighbor !equals something in the explored-list
+- - - - best neighbor = neighbor
+- - - else (observationally equivalent to some older program)
+- - - - increment counter for that equivalence class
+- - - - best neighbor = neighbor with some chance (eg. 1/counter)
+- ...continue with algorithm...
+
+explored-list: (PROBLEM: how do we efficiently keep this map? it could be huge)
+- hashmap
+- keys: example world
+- values: tuple(counter, list[dead states])
 
 dead-end implementation: (USELESS IMPLEMENTATION)
 (problem is that pruning on observational equivalence on dead states is
