@@ -11,7 +11,7 @@ from search.vlns.large_neighborhood_search.repair.insert_n_repair import InsertN
 
 class RemoveNInsertNVDI(LNS):
 
-    def __init__(self, inc_depth_after: int, time_limit=10, accept=DeterministicAccept(), Ni_increment=0, init_temp = 0, cooling: float = 0, best_improvement: int = 1):
+    def __init__(self, inc_depth_after: int, time_limit=10, accept=DeterministicAccept(), Ni_increment=0, best_improvement: int = 1, prune=False):
         super().__init__(
             time_limit=time_limit,
 
@@ -31,4 +31,6 @@ class RemoveNInsertNVDI(LNS):
             best_improvement=best_improvement,
 
             debug=False,
+
+            prune=prune
         )
