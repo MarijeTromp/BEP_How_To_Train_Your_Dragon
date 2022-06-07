@@ -11,7 +11,8 @@ from example_parser.parser import Parser, TestCase
 from example_parser.pixel_parser import PixelParser
 from example_parser.robot_parser import RobotParser
 from example_parser.string_parser import StringParser
-from search.MCTS.mcts import MCTS
+# from search.MCTS.mcts import MCTS
+from search.vlns.large_neighborhood_search.accept.stochastic_accept import StochasticAccept
 from search.a_star.a_star import AStar
 from search.abstract_search import SearchAlgorithm
 from search.brute.brute import Brute
@@ -137,7 +138,7 @@ class BatchRun:
         return d
 
     def _init_store_system(self):
-        folder = "{}/results/{}".format(os.getcwd(), self.domain)
+        folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/rhellinga')), self.domain)
 
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -243,7 +244,7 @@ class BatchRun:
         map = {
             MetropolisHasting: "metro",
             Brute: "brute",
-            MCTS: "mcts",
+            # MCTS: "mcts",
             VanillaGP: "gp",
             RemoveNInsertN: "VLNS",
             RemoveNInsertNVDI: "VLNS_vdi",
@@ -251,7 +252,12 @@ class BatchRun:
         }
 
         if isinstance(algo, RemoveNInsertNVDI):
-            return "VLNS_vdi{}".format(algo.increase_depth_after)
+            return "Vlute Ni:{} accept:{} Ni_increment:{} best_imp:{}".format(algo.increase_depth_after,
+                                                 algo.accept.__class__.__name__,
+                                                 algo.Ni_increment,
+                                                 algo.best_improvement
+                                                 )
+            # return "VLNS_vdi{}".format(algo.increase_depth_after)
 
         if isinstance(algo, FluteBrute):
             return "FluteBrute{}".format(algo.increase_depth_after)

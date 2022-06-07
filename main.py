@@ -1,7 +1,7 @@
 import sys
 from evaluation.experiment_procedure import *
 from example_parser.string_parser import StringParser
-from search.MCTS.mcts import MCTS
+# from search.MCTS.mcts import MCTS
 from search.a_star.a_star import AStar
 from search.abstract_search import SearchAlgorithm
 from search.gen_prog.vanilla_GP import VanillaGP
@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     # Settings
     time_limit = 10
-    domain = "string"
+    domain = "robot"
     index = int(sys.argv[1])
 
     algo = [
