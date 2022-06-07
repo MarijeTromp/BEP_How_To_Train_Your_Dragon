@@ -105,11 +105,11 @@ class LNS(SearchAlgorithm):
             if ((self.cost_current - best_neighbor_cost) < (self.cost_current - c_temp)):
                 fraction = 0.5 #TODO: pass this as a parameter
                 # Prune
-                if self.prune\
-                        & prune.prune(self.sol_current, best_neighbor, test_case, fraction):
-                    break
-                best_neighbor = x_temp
-                best_neighbor_cost = c_temp
+                if not (self.prune
+                        & prune.prune(self.sol_current, best_neighbor, test_case, fraction)):
+                    #TODO: check if the negation here is correct
+                    best_neighbor = x_temp
+                    best_neighbor_cost = c_temp
 
         # set the temporary solution to the best found neighbor
         x_temp = best_neighbor
