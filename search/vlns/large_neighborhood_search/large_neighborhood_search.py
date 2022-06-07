@@ -12,6 +12,7 @@ from search.vlns.large_neighborhood_search.invent.invent import Invent
 from search.vlns.large_neighborhood_search.invent.variable_depth_invent import VariableDepthInvent
 from search.vlns.large_neighborhood_search.repair.repair import Repair
 from prune import prune
+from common.environment import RobotEnvironment, PixelEnvironment, StringEnvironment
 
 
 class LNS(SearchAlgorithm):
@@ -102,11 +103,10 @@ class LNS(SearchAlgorithm):
 
             # Update the best found best neighbor based on cost improvement
             if ((self.cost_current - best_neighbor_cost) < (self.cost_current - c_temp)):
-                domain = "robot" #TODO: automate this
                 fraction = 0.5 #TODO: pass this as a parameter
                 # Prune
                 if self.prune\
-                        & prune.prune(self.sol_current, best_neighbor, domain, fraction):
+                        & prune.prune(self.sol_current, best_neighbor, test_case, fraction):
                     break
                 best_neighbor = x_temp
                 best_neighbor_cost = c_temp
