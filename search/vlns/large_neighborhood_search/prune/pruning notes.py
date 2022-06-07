@@ -23,6 +23,9 @@ simple implementation:
 (NOTE: this would only have effect on situations in which no improvement is found,
 in which case the observationally equivalent neighbor would generally be chosen)
 (PRO: saves space, easy to implement. CON: only very superficially applies pruning)
+(QUESTION: how we (efficiently) retrieve the output states of a program?)
+(QUESTION: how we efficiently save the output states of a program?)
+(QUESTION: how do we determine *somechance*?)(ANSWER: by the number of the example worlds are equivalent)
 explore neighborhood:
 - i times
 - - get neighbor
