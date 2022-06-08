@@ -43,7 +43,7 @@ class LNS(SearchAlgorithm):
         self.stats = {}
         self.Ni_increment = Ni_increment
         self.best_improvement = best_improvement
-        self.prune = True
+        self.prune = prune
         self.eq_classes = Equivalence_Classes() if self.prune else None
 
     def setup(self, test_case: list[Example], trans_tokens: list[TransToken], bool_tokens: list[BoolToken]):

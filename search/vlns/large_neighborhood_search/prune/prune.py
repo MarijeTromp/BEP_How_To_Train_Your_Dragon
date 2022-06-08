@@ -7,33 +7,9 @@ from common.tokens.control_tokens import LoopIterationLimitReached
 from search.vlns.large_neighborhood_search.prune.equivalence_classes import Equivalence_Classes
 
 """
-determines the observational equivalence
-p1: first program to be compared
-p2: second program to be compared
-dom: domain to compare them in
-frac: fraction of example to take for comparison
+Method takes a program, and compares it to the current log of equivalence classes
 """
-
-"""
-def pruneList(p1: Program, p2: Program, test_case: list[Example], frac: float) -> bool:
-    #TODO: test_case is always a list of one element, why? I don't know, seems weird
-
-    sample_list = random.sample(test_case, int(frac*len(test_case)))
-    print(len(test_case))
-    print(sample_list)
-    costs_p1 = cost(sample_list, p1)
-    costs_p2 = cost(sample_list, p2)
-
-    overlap = [i for i, j in zip(costs_p1, costs_p2) if i == j]
-    frac_overlap = len(overlap)/len(sample_list)
-
-    chance = frac_overlap #TODO: this has to be a better motivated chance, not just equal to the overlap
-    if random.uniform(0, 1) > chance: # should this be < or >?
-        return True
-
-    return False
-"""
-
+#QUESTION: is it useful to keep the same equivalence classes? As each example is treated seperately?
 def mediumprune(p1: Program, test_case: list[Example], eq_classes: Equivalence_Classes) -> bool:
 
     if len(test_case) != 1:
@@ -77,3 +53,31 @@ def cost(exs: list[Example], p: Program):
             return float('inf')
 
     return [ex_cost(ex) for ex in exs]
+
+"""
+determines the observational equivalence
+p1: first program to be compared
+p2: second program to be compared
+dom: domain to compare them in
+frac: fraction of example to take for comparison
+"""
+
+"""
+def pruneList(p1: Program, p2: Program, test_case: list[Example], frac: float) -> bool:
+    #TODO: test_case is always a list of one element, why? I don't know, seems weird
+
+    sample_list = random.sample(test_case, int(frac*len(test_case)))
+    print(len(test_case))
+    print(sample_list)
+    costs_p1 = cost(sample_list, p1)
+    costs_p2 = cost(sample_list, p2)
+
+    overlap = [i for i, j in zip(costs_p1, costs_p2) if i == j]
+    frac_overlap = len(overlap)/len(sample_list)
+
+    chance = frac_overlap #TODO: this has to be a better motivated chance, not just equal to the overlap
+    if random.uniform(0, 1) > chance: # should this be < or >?
+        return True
+
+    return False
+"""
