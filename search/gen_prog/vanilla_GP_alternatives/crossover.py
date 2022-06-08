@@ -140,7 +140,7 @@ def two_point_crossover(program_x, program_y):
 
     return child_x, child_y
 
-# TODO: Seems to be VERY slow
+
 def uniform_crossover(program_x, program_y):
     shortest = program_x.sequence
     longest = program_y.sequence
@@ -177,10 +177,12 @@ def uniform_crossover(program_x, program_y):
     count = pointer
     while count < length_child_x:
         updated_seq_x += longest[pointer:pointer + 1]
+        count += 1
 
     count = pointer
     while count < length_child_y:
         updated_seq_y += longest[pointer:pointer + 1]
+        count += 1
 
     child_x = Program(updated_seq_x)
     child_y = Program(updated_seq_y)
