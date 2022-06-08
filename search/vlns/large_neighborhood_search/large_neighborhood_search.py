@@ -11,9 +11,8 @@ from search.vlns.large_neighborhood_search.destroy.destroy import Destroy
 from search.vlns.large_neighborhood_search.invent.invent import Invent
 from search.vlns.large_neighborhood_search.invent.variable_depth_invent import VariableDepthInvent
 from search.vlns.large_neighborhood_search.repair.repair import Repair
-from prune import prune
-from common.environment import RobotEnvironment, PixelEnvironment, StringEnvironment
-
+from search.vlns.large_neighborhood_search.prune import prune
+from search.vlns.large_neighborhood_search.prune.equivalence_classes import Equivalence_Classes
 
 class LNS(SearchAlgorithm):
     """Implements the abstract Large Neighborhood Search algorithm given an Accept, Destroy and Repair method. Also a
@@ -44,7 +43,8 @@ class LNS(SearchAlgorithm):
         self.stats = {}
         self.Ni_increment = Ni_increment
         self.best_improvement = best_improvement
-        self.prune = prune
+        self.prune = True
+        self.eq_classes = Equivalence_Classes() if self.prune else None
 
     def setup(self, test_case: list[Example], trans_tokens: list[TransToken], bool_tokens: list[BoolToken]):
         self.invent.setup(trans_tokens, bool_tokens)
@@ -70,7 +70,6 @@ class LNS(SearchAlgorithm):
         self.stats["explored_per_size_sequence"] = []
         self.cost_per_iteration = []
 
-    #TODO: implement pruning method
     #TODO: automate token weights set
     def iteration(self, test_case: list[Example], tokens: list[EnvToken], bt) -> bool:
         if self.cost_best == 0:
@@ -103,13 +102,16 @@ class LNS(SearchAlgorithm):
 
             # Update the best found best neighbor based on cost improvement
             if ((self.cost_current - best_neighbor_cost) < (self.cost_current - c_temp)):
-                fraction = 0.5 #TODO: pass this as a parameter
+                fraction = 0.1 #TODO: pass this as a parameter
                 # Prune
-                if not (self.prune
-                        & prune.prune(self.sol_current, best_neighbor, test_case, fraction)):
-                    #TODO: check if the negation here is correct
+                if not self.prune:
                     best_neighbor = x_temp
                     best_neighbor_cost = c_temp
+                # elif not prune.simpleprune(self.sol_current, x_temp, test_case):
+                elif not prune.mediumprune(x_temp, test_case, self.eq_classes):
+                    best_neighbor = x_temp
+                    best_neighbor_cost = c_temp
+
 
         # set the temporary solution to the best found neighbor
         x_temp = best_neighbor

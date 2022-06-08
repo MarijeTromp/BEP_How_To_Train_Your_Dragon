@@ -55,7 +55,7 @@ explore neighborhood:
 explored-list: (PROBLEM: how do we efficiently keep this map? it could be huge)
 - hashmap
 - keys: example world
-- values: tuple(counter, list[dead states])
+- values: tuple(counter, explored state)
 
 dead-end implementation: (USELESS IMPLEMENTATION)
 (problem is that pruning on observational equivalence on dead states is
