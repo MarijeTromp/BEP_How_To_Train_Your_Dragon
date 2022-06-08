@@ -138,7 +138,8 @@ class BatchRun:
         return d
 
     def _init_store_system(self):
-        folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/rhellinga')), self.domain)
+        folder = "{}/results/{}".format(os.getcwd(), self.domain)
+        # folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/rhellinga')), self.domain)
 
         if not os.path.exists(folder):
             os.makedirs(folder)

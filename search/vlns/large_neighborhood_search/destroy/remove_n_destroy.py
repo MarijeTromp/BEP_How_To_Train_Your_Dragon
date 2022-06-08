@@ -13,7 +13,7 @@ class ExtractNDestroy(Destroy):
     This destroy method runs in O(1).
     """
 
-    def __init__(self, initial_max_n: int, max_max_n: int):
+    def __init__(self, initial_max_n: int, max_max_n: int, strategy: str = "random"):
         """See class documentation."""
         assert initial_max_n >= 0
 
@@ -22,16 +22,20 @@ class ExtractNDestroy(Destroy):
         self.initial_max_n = initial_max_n
         self.max_n = initial_max_n
         self.max_max_n = max_max_n
+        self.strategy = strategy
 
     def reset(self):
         self.max_n = self.initial_max_n
 
     def destroy(self, program: Program) -> list[list[EnvToken]]:
-        # TODO: implement types of degree of destruction (increment, decrement)
 
         # Pick N
         mn = min(self.max_n, len(program.sequence))
         n = random.randint(0, mn + 1)
+        if self.strategy == "increasing":
+            n = 0 #TODO: change to correct increasing value
+        elif self.strategy == "decreasing":
+            n = 0 #TODO: change to correct decreasing value
 
         # Pick index of first to be destroyed token
         i = random.randint(0, len(program.sequence) - n + 1)
