@@ -86,12 +86,12 @@ class LNS(SearchAlgorithm):
         for i in range(self.best_improvement):
 
             # Destroy current solution
-            destroyed = self.destroy.destroy(self.sol_current)
+            destroyed = self.destroy.destroy(self.sol_current, self.iterations_since_last_best, self.increase_depth_after)
             t_d = time.process_time()
             self.debug_print("Destroyed: {}".format(destroyed))
 
             # Repair destroyed solution into temporary solution
-            x_temp = self.repair.repair(destroyed)
+            x_temp = self.repair.repair(destroyed, self.iterations_since_last_best, self.increase_depth_after)
             t_r = time.process_time()
 
             # Calculate cost of temporary solution

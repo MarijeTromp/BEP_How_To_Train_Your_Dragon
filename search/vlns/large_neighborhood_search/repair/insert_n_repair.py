@@ -21,7 +21,7 @@ class InsertNRepair(Repair):
         self.w_loop = w_loop
         self.strategy = strategy
 
-    def repair(self, seqs: list[list[EnvToken]]) -> Program:
+    def repair(self, seqs: list[list[EnvToken]], i: int = 0, Ni: int = 0) -> Program:
         assert len(seqs) == 2
 
         seq = seqs[0]

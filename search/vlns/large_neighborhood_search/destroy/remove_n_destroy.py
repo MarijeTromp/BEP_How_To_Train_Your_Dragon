@@ -27,7 +27,7 @@ class ExtractNDestroy(Destroy):
     def reset(self):
         self.max_n = self.initial_max_n
 
-    def destroy(self, program: Program) -> list[list[EnvToken]]:
+    def destroy(self, program: Program, i: int = 0, Ni: int = 0) -> list[list[EnvToken]]:
 
         # Pick N
         mn = min(self.max_n, len(program.sequence))

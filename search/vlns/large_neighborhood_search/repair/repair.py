@@ -8,7 +8,7 @@ class Repair:
     def __init__(self):
         self.invent = None
 
-    def repair(self, seqs: list[list[EnvToken]]) -> Program:
+    def repair(self, seqs: list[list[EnvToken]], i: int = 0, Ni: int = 0) -> Program:
         """Repairs a given list of subsequences. Returns repaired Program."""
 
         raise NotImplementedError()
