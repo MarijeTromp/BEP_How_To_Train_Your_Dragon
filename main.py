@@ -10,45 +10,45 @@ from search.metropolis_hastings.metropolis import MetropolisHasting
 
 if __name__ == "__main__":
 
+    # Obtain the domain. Possible domains: "robot", "pixel", "string"
+    domain = sys.argv[1]
+
     # Obtain the experiment parameters
-    params_str = sys.argv[1].replace("'", '"')
+    params_str = sys.argv[2].replace("'", '"')
     params = json.loads(params_str)
     print(json.dumps(params, indent=4, sort_keys=True))
 
     # Possible Search Algorithms: Brute, MCTS, MetropolisHastings, LNS, VanillaGP
     searchAlgos: List[Type[SearchAlgorithm]] = [[MetropolisHasting, "metro"]]
 
-    # Possible domains: "robot", "pixel", "string"
-    domains = ["robot"]
 
-    for domain in domains:
-        results = []
-        for alg in searchAlgos:
-            result = BatchRun(
-                # Task domain
-                domain=domain,
+    results = []
+    for alg in searchAlgos:
+        result = BatchRun(
+            # Task domain
+            domain=domain,
 
-                # Iterables for files name. Use [] to use all values.
-                # This runs all files adhering to format "2-*-[0 -> 10]"
-                # Thus, ([], [], []) runs all files for a domain.
-                files=([], [], []),
+            # Iterables for files name. Use [] to use all values.
+            # This runs all files adhering to format "2-*-[0 -> 10]"
+            # Thus, ([], [], []) runs all files for a domain.
+            files=([], [], []),
 
-                # Search algorithm to be used
-                search_algorithm=alg[0](60, params),
+            # Search algorithm to be used
+            search_algorithm=alg[0](60, params),
 
-                # Prints out result when a test case is finished
-                print_results=True,
+            # Prints out result when a test case is finished
+            print_results=True,
 
-                # Use multi core processing
-                multi_core=True,
+            # Use multi core processing
+            multi_core=True,
 
-                # Use file_name= to append to a file whenever a run got terminated
-                # Comment out argument to create new file.
-                # file_name="VLNS-20211213-162128.txt"
-            ).run()
+            # Use file_name= to append to a file whenever a run got terminated
+            # Comment out argument to create new file.
+            # file_name="VLNS-20211213-162128.txt"
+        ).run()
 
-        for res in results:
-            print(res[0], res[1])
+    for res in results:
+        print(res[0], res[1])
 
 
 
