@@ -23,19 +23,23 @@ if __name__ == "__main__":
     index = int(sys.argv[1])
 
     algo = [
-        # (Brute(time_limit), "Brute"),
-        # (RemoveNInsertN(time_limit), "LNS"),
-        [RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"],
+        (Brute(time_limit), "Brute"),
+        (RemoveNInsertN(time_limit), "LNS"),
+        (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
         # (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
         # (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
         # (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
         # (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
         # (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
-        # (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
+        (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
         # (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
-        # (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
+        # (RemoveNInsertNVDI(10000, time_limit, Ni_increment=100), "VDNS_10000_Ni100"),
+        (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
         # (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
-        [RemoveNInsertNVDI(1000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_1000_Stoch"],
+        # (RemoveNInsertNVDI(10000, time_limit, best_improvement=10), "VDNS_10000_BestImp"),
+        (RemoveNInsertNVDI(1000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_1000_Stoch"),
+        # (RemoveNInsertNVDI(10000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_10000_Stoch"),
+        (RemoveNInsertNVDI(1000, time_limit, prune=True), "VDNS_1000_prune")
     ]
 
     ranges = {
