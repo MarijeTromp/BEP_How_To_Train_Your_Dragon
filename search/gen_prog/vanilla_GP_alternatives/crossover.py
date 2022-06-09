@@ -165,7 +165,7 @@ def uniform_crossover(program_x, program_y):
     pointer = 0
     while pointer < min_length:
         rand = random.uniform(0, 1)
-        if rand <= 0.5:
+        if rand < 0.5:
             updated_seq_x += shortest[pointer:pointer + 1]
             updated_seq_y += longest[pointer:pointer + 1]
             pointer = pointer + 1
@@ -192,7 +192,7 @@ def uniform_crossover(program_x, program_y):
 
 # TODO: Uses n-point crossover for now, maybe change that?
 def queen_bee_crossover(gen):
-    i = 1
+    i = 0
     queen = gen[0]
 
     children = []
@@ -201,9 +201,12 @@ def queen_bee_crossover(gen):
         program = gen[i]
         child_x, child_y = n_point_crossover(queen, program)
         i += 1
-        children.append(child_x)
-        children.append(child_y)
-
+        # Randomly pick one, otherwise the generation size keeps increasing with a factor of 2
+        rand = random.uniform(0, 1)
+        if rand < 0.5:
+            children.append(child_x)
+        else:
+            children.append(child_y)
     return children
 
 
@@ -253,21 +256,21 @@ def three_parent_crossover(gen):
 
             if j < length_parent1 and j < length_parent2 and j >= length_parent3:
                 rand = random.uniform(0, 1)
-                if rand <= 0.5:
+                if rand < 0.5:
                     child += parent1_sequence[j:j + 1]
                 else:
                     child += parent2_sequence[j:j + 1]
 
             if j < length_parent1 and j >= length_parent2 and j < length_parent3:
                 rand = random.uniform(0, 1)
-                if rand <= 0.5:
+                if rand < 0.5:
                     child += parent1_sequence[j:j + 1]
                 else:
                     child += parent3_sequence[j:j + 1]
 
             if j >= length_parent1 and j < length_parent2 and j < length_parent3:
                 rand = random.uniform(0, 1)
-                if rand <= 0.5:
+                if rand < 0.5:
                     child += parent2_sequence[j:j + 1]
                 else:
                     child += parent3_sequence[j:j + 1]
@@ -363,7 +366,7 @@ def random_cross_two_programs(program_x, program_y):
     start_index_x  = 0
     start_index_y = 0
     end_index = 0
-    if rand <= 0.5:
+    if rand < 0.5:
         start_index_y = random.randint(0, length_program_x)
         end_index = max((length_program_x - 1), (start_index_y + length_program_y - 1))
     else:
@@ -378,7 +381,7 @@ def random_cross_two_programs(program_x, program_y):
         index_child = i + start_index_child
         if start_index_x <= index_child < (start_index_x + length_program_x) and start_index_y <= index_child < (start_index_y + length_program_y):
             r = random.uniform(0, 1)
-            if r <= 0.5:
+            if r < 0.5:
                 index = index_child - start_index_x
                 child += program_x_sequence[index:index + 1]
             else:
