@@ -4,6 +4,7 @@ import json
 import os
 import time
 import numpy as np
+import re
 from collections import Iterable, Set
 from itertools import chain
 from multiprocessing import Pool
@@ -138,8 +139,9 @@ class BatchRun:
             os.makedirs(folder)
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
+        param_str = re.sub("[\"\'\s]", "", str(self.search_algorithm.params)).replace(":", "=")
         if self.file_name == "":
-            self.file_name = "{}-{}.txt".format(self.algorithm_name, timestr)
+            self.file_name = "{}-{}-{}.txt".format(self.algorithm_name, param_str, timestr)
             self.last_stored = None
 
         self.path = "{}/{}".format(folder, self.file_name)

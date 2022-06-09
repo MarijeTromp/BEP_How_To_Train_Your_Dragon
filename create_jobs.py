@@ -29,8 +29,8 @@ for part in range(len(param_search_space)):
     f.write("#SBATCH --partition=compute\n")
     f.write("#SBATCH --time=1:00:00\n")
     f.write("#SBATCH --ntasks=1\n")
-    f.write("#SBATCH --cpus-per-task=32")
-    f.write("#SBATCH --mem-per-cpu=4G")
+    f.write("#SBATCH --cpus-per-task=32\n")
+    f.write("#SBATCH --mem-per-cpu=4G\n")
     f.write("#SBATCH --job-name=job%d\n" % part)
     f.write("#SBATCH --output=out/job%dout.txt\n" % part)
     f.write("#SBATCH --error=out/job%derr.txt\n" % part)
@@ -53,5 +53,5 @@ for part in range(len(param_search_space)):
     f.write("srun python -u $HOME/main.py \"robot\" \"" + param_search_space[part] + "\"\n")
 
 # after uploading the jobscripts, you can copy / paste the following in the terminal to submit all the jobs:
-# for part in range(0,13):
+# for part in range(0,26):
 #     print('sbatch job%d.sh' % part)
