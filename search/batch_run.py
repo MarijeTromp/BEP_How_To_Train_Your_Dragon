@@ -144,6 +144,10 @@ class BatchRun:
         if not os.path.exists(folder):
             os.makedirs(folder)
 
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        if self.file_name == "":
+            self.file_name = "{}-{}".format(self.algorithm_name, timestr)
+
         self.path = "{}/{}".format(folder, self.file_name)
 
         # Create file if does not exists
@@ -253,10 +257,11 @@ class BatchRun:
         }
 
         if isinstance(algo, RemoveNInsertNVDI):
-            return "Vlute Ni:{} accept:{} Ni_increment:{} best_imp:{}".format(algo.increase_depth_after,
+            return "Vlute_Ni_{}_accept_{}_Ni_increment_{}_best_imp_{}_prune_{}".format(algo.increase_depth_after,
                                                  algo.accept.__class__.__name__,
                                                  algo.Ni_increment,
-                                                 algo.best_improvement
+                                                 algo.best_improvement,
+                                                algo.prune
                                                  )
             # return "VLNS_vdi{}".format(algo.increase_depth_after)
 

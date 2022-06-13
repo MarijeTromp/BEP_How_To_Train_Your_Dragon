@@ -33,11 +33,11 @@ class ExtractNDestroy(Destroy):
         mn = min(self.max_n, len(program.sequence))
         n = random.randint(0, mn + 1)
         if self.strategy == "increasing":
-            # n is some increasing number between 1 and self.max_n
-            n = max(1, int((i/Ni)*self.max_n))
+            # n is some increasing number between 0 and mn
+            n = max(0, int((i/Ni)*mn))
         elif self.strategy == "decreasing":
-            # n is some decreasing number between 1 and self.max_n
-            n = max(1, self.max_n - int((i/Ni)*self.max_n))
+            # n is some decreasing number between 0 and mn
+            n = max(0, mn - int((i/Ni)*mn))
 
         # Pick index of first to be destroyed token
         i = random.randint(0, len(program.sequence) - n + 1)

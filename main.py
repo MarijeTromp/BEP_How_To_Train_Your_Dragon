@@ -23,29 +23,27 @@ if __name__ == "__main__":
     index = int(sys.argv[1])
 
     algo = [
-        (Brute(time_limit), "Brute"),
-        (RemoveNInsertN(time_limit), "LNS"),
-        (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
+        # initial_max_n=3, max_max_n=3, w_trans=1, w_loop=1, w_if=0, strategy= random
+        # (Brute(time_limit), "Brute"),
+        # (RemoveNInsertN(time_limit), "LNS"),
+        (RemoveNInsertNVDI(1000, time_limit, prune=True), "VDNS_1000_prune"),
+        # (RemoveNInsertNVDI(1000, time_limit, strategy="random"), "VDNS_1000_ran"),
+        # (RemoveNInsertNVDI(1000, time_limit, strategy="increasing"), "VDNS_1000_inc"),
+        # (RemoveNInsertNVDI(1000, time_limit, strategy="decreasing"), "VDNS_1000_dec"),
+        # (RemoveNInsertNVDI(10000, time_limit, strategy="random"), "VDNS_10000_ran"),
+        # (RemoveNInsertNVDI(10000, time_limit, strategy="increasing"), "VDNS_10000_inc"),
+        # (RemoveNInsertNVDI(10000, time_limit, strategy="decreasing"), "VDNS_10000_dec"),
+        # (RemoveNInsertNVDI(1000, time_limit), "VDNS_1000"),
         # (RemoveNInsertNVDI(3000, time_limit), "VDNS_3000"),
-        # (RemoveNInsertNVDI(5000, time_limit), "VDNS_5000"),
-        # (RemoveNInsertNVDI(10000, time_limit), "VDNS_10000"),
-        # (RemoveNInsertNVDI(15000, time_limit), "VDNS_15000"),
-        # (RemoveNInsertNVDI(30000, time_limit), "VDNS_30000"),
-        (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),
-        # (RemoveNInsertNVDI(3000, time_limit, Ni_increment=100), "VDNS_3000_Ni100"),
-        # (RemoveNInsertNVDI(10000, time_limit, Ni_increment=100), "VDNS_10000_Ni100"),
-        (RemoveNInsertNVDI(1000, time_limit, best_improvement=10), "VDNS_1000_BestImp"),
+        # (RemoveNInsertNVDI(1000, time_limit, Ni_increment=100), "VDNS_1000_Ni100"),,
         # (RemoveNInsertNVDI(3000, time_limit, best_improvement=10), "VDNS_3000_BestImp"),
-        # (RemoveNInsertNVDI(10000, time_limit, best_improvement=10), "VDNS_10000_BestImp"),
-        (RemoveNInsertNVDI(1000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_1000_Stoch"),
         # (RemoveNInsertNVDI(10000, time_limit, accept=StochasticAccept(float(0.1), float(0.997))), "VDNS_10000_Stoch"),
-        (RemoveNInsertNVDI(1000, time_limit, prune=True), "VDNS_1000_prune")
     ]
 
     ranges = {
         "string": [range(1, 101), range(101, 201), range(201, 301), range(301, 328)],
         "robot": [[]],
-        "pixel": [[i] for i in range(0, 10)],
+        "pixel": [[]], #[[i] for i in range(0, 10)],
     }
     result = []
 

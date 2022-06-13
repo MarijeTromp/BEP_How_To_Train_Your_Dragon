@@ -29,11 +29,11 @@ class InsertNRepair(Repair):
         # Pick N, minimum of 1
         n = random.randint(1, self.max_n + 1)
         if self.strategy == "increasing":
-            # n is some increasing number between 1 and self.max_n
-            n = max(1, int((i/Ni)*self.max_n))
+            # n is some increasing number between 0 and self.max_n
+            n = max(0, int((i/Ni)*self.max_n))
         elif self.strategy == "decreasing":
-            # n is some decreasing number between 1 and self.max_n
-            n = max(1, self.max_n - int((i/Ni)*self.max_n))
+            # n is some decreasing number between 0 and self.max_n
+            n = max(0, self.max_n - int((i/Ni)*self.max_n))
 
         for _ in range(n):
             seq.append(self.random_token(w_trans=self.w_trans, w_if=self.w_if, w_loop=self.w_loop))
