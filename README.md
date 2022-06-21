@@ -1,6 +1,6 @@
 # BEP_How_To_Train_Your_Dragon
 
-This code is part of the BEP projects of M.R. Tromp (add your name here). The topics of the projects are:
+This code is part of the [Research Project 21/22 Q4](https://github.com/TU-Delft-CSE/Research-Project) at [TU Delft](https://https//github.com/TU-Delft-CSE) of M.R. Tromp (add your name here). The topics of the projects are:
 - Alternatives to the components of a Genetic Algorithm (M.R. Tromp)
 - Add your project
 
