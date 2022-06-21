@@ -1,3 +1,5 @@
+# Original code by F. Azimzade. Other code by M.R. Tromp.
+
 import math
 
 from search.gen_prog.vanilla_GP_alternatives import general
@@ -97,29 +99,6 @@ def one_mutation_mutation_altered(program, token_functions):
     mutated_program = Program(mutated_seq)
 
     return mutated_program
-
-
-# TODO: Fix this
-def mutation_clock_mutation(gen, mutation_chance, token_functions):
-    mutated_gen = []
-    k = 1
-    i = 1
-    genlength = len(gen)
-
-    while i < genlength:
-        u = random.uniform(0, 1)
-        l = (1 / mutation_chance) * math.log(1 - u, 10)
-        program_seq = gen[i].sequence
-        n = len(program_seq)
-        mutation_index_k = ((k + l) % n)
-        mutation_index_i = ((k + l) / n)
-
-        # Mutate the gene
-
-        k = round(mutation_index_k)
-        i = i + round(mutation_index_i)
-
-    return mutated_gen
 
 
 def interchanging_mutation(program):

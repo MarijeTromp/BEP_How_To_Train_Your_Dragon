@@ -1,3 +1,5 @@
+# Original code by F. Azimzade. Other code by M.R. Tromp.
+
 import copy
 
 from search.gen_prog.vanilla_GP_alternatives import general
@@ -190,7 +192,6 @@ def uniform_crossover(program_x, program_y):
     return child_x, child_y
 
 
-# TODO: Uses n-point crossover for now, maybe change that?
 def queen_bee_crossover(gen):
     i = 0
     queen = gen[0]
@@ -347,7 +348,6 @@ def multiple_parent_crossover(gen):
     return children
 
 
-# TODO: Check implementation
 def random_cross_two_programs(program_x, program_y):
     program_x_sequence = program_x.sequence
     length_program_x = len(program_x_sequence)

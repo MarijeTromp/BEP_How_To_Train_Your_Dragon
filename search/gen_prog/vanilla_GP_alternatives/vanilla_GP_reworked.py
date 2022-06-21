@@ -1,4 +1,4 @@
-# VANILLA GENETIC PROGRAMMING ALGORITHM
+# VANILLA GENETIC PROGRAMMING ALGORITHM Original code by F. Azimzade, but refactored by M.R. Tromp.
 import enum
 
 from search.gen_prog.vanilla_GP_alternatives import general

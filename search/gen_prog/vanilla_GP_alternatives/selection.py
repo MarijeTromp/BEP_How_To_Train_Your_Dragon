@@ -1,3 +1,5 @@
+# Original code by F. Azimzade. Other code by M.R. Tromp.
+
 import copy
 
 from search.gen_prog.vanilla_GP_alternatives import general
@@ -82,7 +84,6 @@ def sum_fitness(current_gen):
     return total_fitness
 
 
-# TODO: Is this correct? Also, see todo for RWS.
 def stochastic_universal_sampling(current_gen):
     intermediate_gen = []
     N = len(current_gen)
@@ -104,7 +105,6 @@ def stochastic_universal_sampling(current_gen):
     return intermediate_gen
 
 
-# TODO: Change behaviour when fitness is inf?
 def roulette_wheel_selection(gen):
     intermediate_gen = []
     total_fitness = sum_fitness(gen)
@@ -171,7 +171,6 @@ def downsampled_lexicase(current_gen, training_examples):
 
     count = 0
 
-    # TODO: Is now downsampled to 5, maybe change to variable?
     while (len(current_gen) > 1) and (len(examples) > 0) and (count < 5):
         example = examples.pop(0)
         (best_error, current_gen_errors) = find_best_error(current_gen, example)
@@ -194,7 +193,6 @@ def downsampled_lexicase_selection(current_gen, training_examples):
     return intermediate_gen
 
 
-# TODO: For now it uses SUS and lexicase, maybe change this? Can also change the min size for training examples
 def combined_lexicase_selection(current_gen, training_examples, current_gen_fitness):
     training_size = len(training_examples)
 
