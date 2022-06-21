@@ -13,6 +13,12 @@ from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n import R
 
 if __name__ == "__main__":
     searchAlgos : List[Type[SearchAlgorithm]    ] = [
+        [Brute, "brute"],
+        [MetropolisHasting, "metro"],
+        [MCTS, "mcts"],
+        [VanillaGP, "gp"],
+        [RemoveNInsertN, "VLNS"],
+        [AStar, "Astar"],
         [VanillaGPReworked, "gpr"]
     ]
 

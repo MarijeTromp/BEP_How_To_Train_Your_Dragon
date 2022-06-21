@@ -59,3 +59,24 @@ def gen_fitness(current_gen_error):
     return current_gen_fitness
 
 # ------------------------------------------------ End original code ------------------------------------------------
+
+
+def program_error_example(program, example):
+    try:
+        loss = 0.0
+        solved = True
+        input_expected = example.input_environment
+        output_expected = example.output_environment
+        program_output = program.interp(input_expected)
+        loss += program_output.distance(output_expected)
+        solved = solved and program_output.correct(output_expected)
+        if (solved):
+            error = 0
+            return error
+        else:
+            error = loss
+            # print(solved)
+            return error
+    except (InvalidTransition, LoopIterationLimitReached) as e:
+        error = float("inf")
+        return error
