@@ -5,6 +5,7 @@ from search.gen_prog.vanilla_GP_alternatives import general
 import random
 from common.prorgam import Program
 
+
 # ------------------------------------------------ Start original code ------------------------------------------------
 
 def classical_mutation(program, mutation_chance, token_functions):
@@ -52,6 +53,7 @@ def UMAD(program, token_functions):
 
     new_program = Program(genome_final)
     return new_program
+
 
 # ------------------------------------------------ End original code ------------------------------------------------
 
@@ -227,3 +229,29 @@ def reversing_mutation(program):
         i += 1
 
     return Program(mutated_seq)
+
+
+def one_mutation_mutation_altered_higher_loop_chance(program, token_functions, loop_token_functions):
+    program_seq = program.sequence
+    mutated_seq = []
+
+    mutation_index = random.randint(0, len(program_seq) + 1)
+    i = 0
+
+    for function in program_seq:
+        if i == mutation_index:
+            token = general.draw_from(token_functions)
+            r = random.uniform(0, 1)
+            if r < 0.5 and ("while" not in token.to_formatted_string()):
+                token = general.draw_from(loop_token_functions)
+            mutated_seq.append(token)
+        else:
+            mutated_seq.append(function)
+        i += 1
+
+    if mutation_index == (len(program_seq) + 1):
+        mutated_seq.append(general.draw_from(token_functions))
+
+    mutated_program = Program(mutated_seq)
+
+    return mutated_program

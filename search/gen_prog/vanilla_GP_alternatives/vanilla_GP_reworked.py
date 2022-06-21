@@ -12,13 +12,11 @@ import statistics
 import random, itertools
 from common.experiment import Example
 from common.prorgam import Program
-from common.tokens.abstract_tokens import InvalidTransition, Token
-from common.tokens.control_tokens import LoopIterationLimitReached
+from common.tokens.abstract_tokens import Token
 from search.abstract_search import SearchAlgorithm
 from search.invent import invent2
 
 from typing import List
-from math import inf
 
 
 class SelectionMethods(enum.Enum):
@@ -51,18 +49,20 @@ class MutationMethods(enum.Enum):
     Interchanging = 5
     Scramble = 6
     Reversing = 7
+    AlteredOneMutationLoops = 8
 
 
 class VanillaGPReworked(SearchAlgorithm):
     # Static fields
-    selection_type = SelectionMethods.SUS
-    crossover_type = CrossoverMethods.OnePoint
-    mutation_type = MutationMethods.Classical
+    selection_type = SelectionMethods.DownsampledLexicase
+    crossover_type = CrossoverMethods.ThreeParent
+    mutation_type = MutationMethods.AlteredOneMutationLoops
 
     MAX_NUMBER_OF_GENERATIONS = 200
     MAX_TOKEN_FUNCTION_DEPTH = 5  # used in the invention of tokens
     training_examples = []  # training examples
     token_functions = []
+    loop_token_functions = []
     mutation_chance = 2  # Chance of an individual gene(function) being mutated (may be changed to be random for each mutation(?))
 
     # Dynamic fields
@@ -152,7 +152,6 @@ class VanillaGPReworked(SearchAlgorithm):
                 children.append(child_x)
                 children.append(child_y)
                 i += 2
-
         return children
 
     def gen_mutate(self, gen):
@@ -180,6 +179,9 @@ class VanillaGPReworked(SearchAlgorithm):
         elif self.mutation_type == MutationMethods.Reversing:
             mutated_gen = [mutation.reversing_mutation(program) for program in gen]
 
+        elif self.mutation_type == MutationMethods.AlteredOneMutationLoops:
+            mutated_gen = [mutation.one_mutation_mutation_altered_higher_loop_chance(program, self.token_functions, self.loop_token_functions) for program in gen]
+
         return mutated_gen
 
     # -- Breed Next Generation
@@ -202,6 +204,11 @@ class VanillaGPReworked(SearchAlgorithm):
     def setup(self, training_examples: List[Example], trans_tokens: set[Token], bool_tokens: set[Token]):
         self.token_functions = [token for token in list(trans_tokens)] + invent2(trans_tokens, bool_tokens,
                                                                                  self.MAX_TOKEN_FUNCTION_DEPTH)
+
+        for token in self.token_functions:
+            if "while" in token.to_formatted_string():
+                self.loop_token_functions.append(token)
+
         self.training_examples = training_examples
 
         # Set the overall best results to the performance of the initial (empty) best program Program([])
