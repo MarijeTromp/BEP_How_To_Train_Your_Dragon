@@ -20,7 +20,6 @@ from math import inf
 
 # ------------------------------------------------ Start original code ------------------------------------------------
 
-# I don't think this is used so I do not want to spend the time necessary to fix this.
 def selection(current_gen_fitness):
     intermediate_gen = []
     crossover_subset = []
