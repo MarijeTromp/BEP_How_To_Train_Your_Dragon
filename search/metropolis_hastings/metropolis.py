@@ -9,6 +9,7 @@ import math
 
 from search.search_result import SearchResult
 
+
 random.seed(5099404)
 
 class Mutation():
@@ -36,7 +37,7 @@ class MetropolisHasting(SearchAlgorithm):
             "add_loop_random": 0,
             "add_if_statement_end": 0,
             "add_if_statement_random": 0,
-            "start_over": 0
+            "start_over": 0,
         }
 
         for k,v in params.items():
@@ -51,8 +52,8 @@ class MetropolisHasting(SearchAlgorithm):
         self._best_program: Program = Program([])
         self.cost = 100
         self.proposal_distribution = ProposalDistribution()
-        # Find a way to systematically explore the types of mutations and their values,
-        # e.g. remove_random_token vs remove_last_token
+
+        # See if there is a way to systematically add all tokens
         fac = MutationFactory()
         self.proposal_distribution.add_mutation(fac.add_token_end(trans_tokens), self.params['add_token_end'])
         self.proposal_distribution.add_mutation(fac.add_token_random(trans_tokens), self.params['add_token_random'])
@@ -87,28 +88,45 @@ class MetropolisHasting(SearchAlgorithm):
         return super().extend_result(search_result)
 
     def calc_transition_probabilities(self, mut: Mutation):
+        # Define the forward and backward transition probabilities by getting the numerators, f and b respectively,
+        # and dividing by the total weight
         total = self.proposal_distribution.get_total_weight()
-        forward_transition, backward_transition = 0, 0
+        f, b = 1, 1
 
-        # Examine math to find proper forward and backward probabilities for random position mutations
-        # Current approach: just use metropolis (assume forward == backward)
         if mut.name == "add_token_end":
-            pro = self.params['add_token_end'], self.params['remove_token_end']
+            f, b = self.params['add_token_end'], self.params['remove_token_end']
         elif mut.name == "add_token_random":
-            pro = self.params['add_token_random'], self.params['remove_token_random']
+            return 1, 1
         elif mut.name == "remove_token_end":
-            pro = self.params['remove_token_end']
+            if len(self._best_program.sequence) == 0:
+                return 1, 1
+            f, b = self.params['remove_token_end'], self.get_backward_transition(self._best_program.sequence[-1])
         elif mut.name == "remove_token_random":
             return 1, 1
         elif mut.name == "add_loop_end":
-            pro = self.params['add_loop_end']
-        elif mut.name == "add_if_statement_end":
-            pro = self.params['add_if_statement_end']
-        elif mut.name == "start_over":
-            # Explore alternatives for restarts
+            f, b = self.params['add_loop_end'], self.params['remove_token_end']
+        elif mut.name == "add_loop_random":
             return 1, 1
+        elif mut.name == "add_if_statement_end":
+            f, b = self.params['add_if_statement_end'], self.params['remove_token_end']
+        elif mut.name == "add_if_statement_random":
+            return 1, 1
+        elif mut.name == "start_over":
+            # Default approach: use metropolis
+            if self.params['type'] in ['metropolis', 'metropolis_hastings'] or len(self._best_program.sequence) == 0:
+                return 1, 1
+            # Attempt to calculate an accurate backwards probability for a start_over
+            f, b = self.params['start_over'], sum([self.get_backward_transition(x) for x in self._best_program.sequence]) / (total ** (len(self._best_program.sequence)-1))
 
-        return forward_transition / total, backward_transition / total
+        return f / total, b / total
+
+    def get_backward_transition(self, token):
+        if isinstance(token, LoopWhile):
+            return self.params['add_loop_end']
+        elif isinstance(token, If):
+            return self.params['add_if_statement_end']
+        else:
+            return self.params['add_token_end']
 
 
     @staticmethod
@@ -132,8 +150,8 @@ class MetropolisHasting(SearchAlgorithm):
 
             # Default is Random Walk - Metropolis
             ratio = math.exp(-alpha * cost) / math.exp(-alpha * ocost)
-            if type == "metropolis_hastings":
-                ratio *= forward_transition / backward_transition
+            if type != "metropolis":
+                ratio *= backward_transition / forward_transition
 
             if ratio > 1:
                 return new_program, cost, solved

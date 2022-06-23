@@ -139,7 +139,7 @@ class BatchRun:
             os.makedirs(folder)
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        param_str = re.sub("[\"\'\s]", "", str(self.search_algorithm.params)).replace(":", "=")
+        param_str = re.match(".*(\[.*\]).*", str(self.search_algorithm.params.values())).group(1)
         if self.file_name == "":
             self.file_name = "{}-{}-{}.txt".format(self.algorithm_name, param_str, timestr)
             self.last_stored = None
