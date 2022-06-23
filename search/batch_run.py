@@ -3,6 +3,8 @@ import copy
 import json
 import os
 import time
+import numpy as np
+import re
 from collections import Iterable, Set
 from itertools import chain
 from multiprocessing import Pool
@@ -61,8 +63,9 @@ class BatchRun:
             with Pool(processes=os.cpu_count() - 1) as pool:
                 # collect results sorted and in chunks to minimize communication overhead on HPC
                 for i, d in enumerate(pool.imap(self._test_case, self.test_cases, chunksize=10)):
-                    self.debug_print(f"{self.search_algorithm.__class__.__name__} {i}: {d['file']}, test_cost: {d['test_cost']}, train_cost: {d['train_cost']}, time: {d['execution_time']}, length: {d['program_length']}, iterations: {d['number_of_iterations']}")
-                    self._store_result(d)
+                    case_data = f"{self.search_algorithm.__class__.__name__} {i}: {d['file']}, test_cost: {d['test_cost']}, train_cost: {d['train_cost']}, time: {d['execution_time']}, length: {d['program_length']}, iterations: {d['number_of_iterations']}"
+                    self.debug_print(case_data)
+                    self._store_result({"test_case": i, "data": case_data})
                     results.append(d)
         else:
             for tc in self.test_cases:
@@ -85,22 +88,27 @@ class BatchRun:
 
         keys = ["test_cost", "train_cost", "execution_time", "program_length", "number_of_explored_programs",
                 "number_of_iterations"]
-        ave_res = self._average(results, keys)
-        ave_cor = self._average(correct_results, keys)
-        ave_ncor = self._average(not_correct_results, keys)
 
-        self.debug_print("Average overall: {}".format(ave_res))
-        self.debug_print("Average correct: {}".format(ave_cor))
-        self.debug_print("Average not correct: {}".format(ave_ncor))
-
+        # Store stats and the best program
         final = {
             "domain": self.domain,
+            "params": self.search_algorithm.params,
             "files": str(self.files),
-            "average": ave_res,
-            "average_correct": ave_cor,
-            "average_failed": ave_ncor,
-            "results": results,
+            "cases_solved": "{} / {} ({}%)".format(correct, s, p),
+            "average":              self._average(results, keys),
+            "average_correct":      self._average(correct_results, keys),
+            "average_failed":       self._average(not_correct_results, keys),
+            "variance":             self._variance(results, keys),
+            "variance_correct":     self._variance(correct_results, keys),
+            "variance_failed":      self._variance(not_correct_results, keys),
+            "best_results": correct_results[-1] if correct > 0 else results[-1],
         }
+        self._store_result(final)
+
+        self.debug_print("Parameters: {}".format(self.search_algorithm.params))
+        self.debug_print("Average overall: {}".format(final['average']))
+        self.debug_print("Average correct: {}".format(final['average_correct']))
+        self.debug_print("Average not correct: {}".format(final['average_failed']))
 
         return final
 
@@ -125,13 +133,24 @@ class BatchRun:
         return d
 
     def _init_store_system(self):
-        folder = "{}/results/{}".format(os.getcwd(), self.domain)
+
+        # Choose output folder:
+
+        # Option 1
+        folder = "/results/"
+
+        # Option 2 (if you run the code on DelftBlue):
+        # folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/your-netid')), self.domain)
 
         if not os.path.exists(folder):
             os.makedirs(folder)
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
+
+        # Uncomment to add parameters into file name (currently only works for Metropolis-Hastings)
+        # param_str = re.match(".*(\[.*\]).*", str(self.search_algorithm.params.values())).group(1)
         if self.file_name == "":
+            # self.file_name = "{}-{}-{}.txt".format(self.algorithm_name, param_str, timestr)
             self.file_name = "{}-{}.txt".format(self.algorithm_name, timestr)
             self.last_stored = None
 
@@ -198,6 +217,17 @@ class BatchRun:
                     res[k] += d[k] / len(dicts)
 
         return res
+
+    @staticmethod
+    def _variance(dicts: list[dict], keys: list[str]):
+        res = {k: 0 for k in keys}
+
+        # Calculate the hypothetical population for each key using ddof=1
+        for k in keys:
+            res[k] = np.var(list(filter(lambda x: x != float('inf'), map(lambda x: x[k], dicts))), ddof=1)
+
+        return res
+
 
     @staticmethod
     def _get_parser(domain: str) -> Parser:
