@@ -133,15 +133,25 @@ class BatchRun:
         return d
 
     def _init_store_system(self):
-        folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/qbhofstede')), self.domain)
+
+        # Choose output folder:
+
+        # Option 1
+        folder = "/results/"
+
+        # Option 2 (if you run the code on DelftBlue):
+        # folder = "{}/results/{}".format(os.path.abspath(os.path.join('../..', 'scratch/your-netid')), self.domain)
 
         if not os.path.exists(folder):
             os.makedirs(folder)
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        param_str = re.match(".*(\[.*\]).*", str(self.search_algorithm.params.values())).group(1)
+
+        # Uncomment to add parameters into file name (currently only works for Metropolis-Hastings)
+        # param_str = re.match(".*(\[.*\]).*", str(self.search_algorithm.params.values())).group(1)
         if self.file_name == "":
-            self.file_name = "{}-{}-{}.txt".format(self.algorithm_name, param_str, timestr)
+            # self.file_name = "{}-{}-{}.txt".format(self.algorithm_name, param_str, timestr)
+            self.file_name = "{}-{}.txt".format(self.algorithm_name, timestr)
             self.last_stored = None
 
         self.path = "{}/{}".format(folder, self.file_name)
