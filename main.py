@@ -4,20 +4,16 @@ import sys
 import json
 #
 from evaluation.experiment_procedure import *
+from search.MCTS.mcts import MCTS
+from search.a_star.a_star import AStar
 from search.abstract_search import SearchAlgorithm
 from search.batch_run import BatchRun
+from search.gen_prog.vanilla_GP import VanillaGP
+from search.gen_prog.vanilla_GP_alternatives.vanilla_GP_reworked import VanillaGPReworked
 from search.metropolis_hastings.metropolis import MetropolisHasting
+from search.vlns.large_neighborhood_search.algorithms.remove_n_insert_n import RemoveNInsertN
 
 if __name__ == "__main__":
-    searchAlgos : List[Type[SearchAlgorithm]    ] = [
-        [Brute, "brute"],
-        [MetropolisHasting, "metro"],
-        [MCTS, "mcts"],
-        [VanillaGP, "gp"],
-        [RemoveNInsertN, "VLNS"],
-        [AStar, "Astar"],
-        [VanillaGPReworked, "gpr"]
-    ]
 
     # Obtain the domain. Possible domains: "robot", "pixel", "string"
     # If not an argument you can set it here
@@ -28,7 +24,8 @@ if __name__ == "__main__":
 
     print("domain : " + domain)
 
-    # Obtain the experiment parameters, this holds only for Metropolis-Hastings.
+    # SPECIFIC TO METROPOLIS-HASTINGS - ignore otherwise
+    # Obtain the experiment parameters
     # If not an argument you can set it here
     if len(sys.argv) > 2:
         params_str = sys.argv[2].replace("'", '"')
@@ -50,8 +47,15 @@ if __name__ == "__main__":
     print(json.dumps(params, indent=4, sort_keys=True))
 
     # Possible Search Algorithms: Brute, MCTS, MetropolisHastings, LNS, VanillaGP
-    searchAlgos: List[Type[SearchAlgorithm]] = [[MetropolisHasting, "metro"]]
-
+    searchAlgos: List[Type[SearchAlgorithm]] = [
+        [Brute, "brute"],
+        [MetropolisHasting, "metro"],
+        [MCTS, "mcts"],
+        [VanillaGP, "gp"],
+        [RemoveNInsertN, "VLNS"],
+        [AStar, "Astar"],
+        [VanillaGPReworked, "gpr"]
+    ]
 
     results = []
     for alg in searchAlgos:
@@ -65,7 +69,8 @@ if __name__ == "__main__":
             files=([], [], []),
 
             # Search algorithm to be used
-            search_algorithm=alg[0](60, params),
+            # Metropolis methods passes parameters as arguments
+            search_algorithm=alg[0](60, params) if alg[1] == "metro" else alg[0](60),
 
             # Prints out result when a test case is finished
             print_results=True,
