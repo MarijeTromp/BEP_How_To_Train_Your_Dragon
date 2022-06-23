@@ -1,0 +1,10 @@
+{"test_case": 0, "data": "MetropolisHasting 0: pixels/1-0-1.pl, test_cost: 0, train_cost: 0, time: 2.182474601, length: 135, iterations: 112764"}
+{"test_case": 1, "data": "MetropolisHasting 1: pixels/1-0-2.pl, test_cost: 0, train_cost: 0, time: 34.175890002, length: 63, iterations: 1795422"}
+{"test_case": 2, "data": "MetropolisHasting 2: pixels/1-0-3.pl, test_cost: 10, train_cost: 10, time: 60.00000070800001, length: 7, iterations: 2962285"}
+{"test_case": 3, "data": "MetropolisHasting 3: pixels/1-0-4.pl, test_cost: 12, train_cost: 12, time: 60.000066133000004, length: 6, iterations: 2849487"}
+{"test_case": 4, "data": "MetropolisHasting 4: pixels/1-0-5.pl, test_cost: 7, train_cost: 7, time: 60.00000528700002, length: 13, iterations: 3094359"}
+{"test_case": 5, "data": "MetropolisHasting 5: pixels/1-0-6.pl, test_cost: 11, train_cost: 11, time: 60.00000397499997, length: 24, iterations: 3016113"}
+{"test_case": 6, "data": "MetropolisHasting 6: pixels/1-0-7.pl, test_cost: 10, train_cost: 10, time: 60.00000850999999, length: 5, iterations: 2999239"}
+{"test_case": 7, "data": "MetropolisHasting 7: pixels/1-0-8.pl, test_cost: 7, train_cost: 7, time: 60.000004821000005, length: 6, iterations: 3046311"}
+{"test_case": 8, "data": "MetropolisHasting 8: pixels/1-0-9.pl, test_cost: 0, train_cost: 0, time: 42.21930151099997, length: 149, iterations: 2150061"}
+{"test_case": 9, "data": "MetropolisHasting 9: pixels/1-0-10.pl, test_cost: 8, train_cost: 8, time: 60.000013102000025, length: 27, iterations: 2948650"}
