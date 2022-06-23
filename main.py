@@ -9,6 +9,15 @@ from search.batch_run import BatchRun
 from search.metropolis_hastings.metropolis import MetropolisHasting
 
 if __name__ == "__main__":
+    searchAlgos : List[Type[SearchAlgorithm]    ] = [
+        [Brute, "brute"],
+        [MetropolisHasting, "metro"],
+        [MCTS, "mcts"],
+        [VanillaGP, "gp"],
+        [RemoveNInsertN, "VLNS"],
+        [AStar, "Astar"],
+        [VanillaGPReworked, "gpr"]
+    ]
 
     # Obtain the domain. Possible domains: "robot", "pixel", "string"
     # If not an argument you can set it here

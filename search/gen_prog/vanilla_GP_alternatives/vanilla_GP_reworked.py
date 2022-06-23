@@ -1,4 +1,5 @@
-# VANILLA GENETIC PROGRAMMING ALGORITHM
+# VANILLA GENETIC PROGRAMMING ALGORITHM Original code by F. Azimzade, but refactored by M.R. Tromp.
+import enum
 
 from search.gen_prog.vanilla_GP_alternatives import general
 from search.gen_prog.vanilla_GP_alternatives import fitness
@@ -11,22 +12,57 @@ import statistics
 import random, itertools
 from common.experiment import Example
 from common.prorgam import Program
-from common.tokens.abstract_tokens import InvalidTransition, Token
-from common.tokens.control_tokens import LoopIterationLimitReached
+from common.tokens.abstract_tokens import Token
 from search.abstract_search import SearchAlgorithm
 from search.invent import invent2
 
 from typing import List
-from math import inf
+
+
+class SelectionMethods(enum.Enum):
+    SUSOriginal = 1
+    SUS = 2
+    RWS = 3
+    Lexicase = 4
+    DownsampledLexicase = 5
+    CombinedLexicase = 6
+    Tournament = 7
+    Truncation = 8
+
+
+class CrossoverMethods(enum.Enum):
+    OnePoint = 1
+    NPoint = 2
+    TwoPoint = 3
+    Uniform = 4
+    QueenBee = 5
+    ThreeParent = 6
+    MultipleParent = 7
+    Random = 8
+
+
+class MutationMethods(enum.Enum):
+    Classical = 1
+    UMAD = 2
+    OneMutation = 3
+    AlteredOneMutation = 4
+    Interchanging = 5
+    Scramble = 6
+    Reversing = 7
+    AlteredOneMutationLoops = 8
 
 
 class VanillaGPReworked(SearchAlgorithm):
     # Static fields
-    type = "UN"
+    selection_type = SelectionMethods.DownsampledLexicase
+    crossover_type = CrossoverMethods.ThreeParent
+    mutation_type = MutationMethods.AlteredOneMutationLoops
+
     MAX_NUMBER_OF_GENERATIONS = 200
     MAX_TOKEN_FUNCTION_DEPTH = 5  # used in the invention of tokens
     training_examples = []  # training examples
     token_functions = []
+    loop_token_functions = []
     mutation_chance = 2  # Chance of an individual gene(function) being mutated (may be changed to be random for each mutation(?))
 
     # Dynamic fields
@@ -52,32 +88,100 @@ class VanillaGPReworked(SearchAlgorithm):
         return population
 
     def gen_selection(self, gen):
-        new_gen = selection.selection_SUS(gen)
+        new_gen = []
+
+        if self.selection_type == SelectionMethods.SUSOriginal:
+            new_gen = selection.selection_SUS(gen)
+
+        elif self.selection_type == SelectionMethods.SUS:
+            new_gen = selection.stochastic_universal_sampling(gen)
+
+        elif self.selection_type == SelectionMethods.RWS:
+            new_gen = selection.roulette_wheel_selection(gen)
+
+        elif self.selection_type == SelectionMethods.Lexicase:
+            new_gen = selection.selection_lexicase(self.current_gen, self.training_examples)
+
+        elif self.selection_type == SelectionMethods.DownsampledLexicase:
+            new_gen = selection.downsampled_lexicase_selection(self.current_gen, self.training_examples)
+
+        elif self.selection_type == SelectionMethods.CombinedLexicase:
+            new_gen = selection.combined_lexicase_selection(self.current_gen, self.training_examples, gen)
+
+        elif self.selection_type == SelectionMethods.Tournament:
+            new_gen = selection.tournament_selection_selection(gen)
+
+        elif self.selection_type == SelectionMethods.Truncation:
+            new_gen = selection.truncation_selection_selection(gen)
+
         return new_gen
 
     def gen_crossover(self, gen):
         children = []
 
-        # Iterate over the programs by 2 to pair them up
-        i = 0
-        while i < len(gen):
-            program_x, program_y = gen[i], gen[i + 1]
-            child_x, child_y = None, None
-            if (self.type == "O" or self.type == "U"):
-                child_x, child_y = crossover.one_point_crossover(program_x, program_y)
-            else:
-                child_x, child_y = crossover.n_point_crossover(program_x, program_y)
-            children.append(child_x)
-            children.append(child_y)
-            i += 2
+        if self.crossover_type == CrossoverMethods.QueenBee:
+            children = crossover.queen_bee_crossover(gen)
+
+        elif self.crossover_type == CrossoverMethods.ThreeParent:
+            children = crossover.three_parent_crossover(gen)
+
+        elif self.crossover_type == CrossoverMethods.MultipleParent:
+            children = crossover.multiple_parent_crossover(gen)
+
+        elif self.crossover_type == CrossoverMethods.Random:
+            children = crossover.random_crossover(gen)
+
+        else:
+            i = 0
+            while i < len(gen):
+                program_x, program_y = gen[i], gen[i + 1]
+                child_x, child_y = None, None
+
+                if self.crossover_type == CrossoverMethods.OnePoint:
+                    child_x, child_y = crossover.one_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.NPoint:
+                    child_x, child_y = crossover.n_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.TwoPoint:
+                    child_x, child_y = crossover.two_point_crossover(program_x, program_y)
+
+                elif self.crossover_type == CrossoverMethods.Uniform:
+                    child_x, child_y = crossover.uniform_crossover(program_x, program_y)
+
+                children.append(child_x)
+                children.append(child_y)
+                i += 2
         return children
 
     def gen_mutate(self, gen):
         mutated_gen = []
-        if (self.type == "O" or self.type == "N"):
-            mutated_gen = [mutation.classical_mutation(program, self.mutation_chance, self.token_functions) for program in gen]
-        else:
+
+        if self.mutation_type == MutationMethods.Classical:
+            mutated_gen = [mutation.classical_mutation(program, self.mutation_chance, self.token_functions) for program
+                           in gen]
+
+        elif self.mutation_type == MutationMethods.UMAD:
             mutated_gen = [mutation.UMAD(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.OneMutation:
+            mutated_gen = [mutation.one_mutation_mutation(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.AlteredOneMutation:
+            mutated_gen = [mutation.one_mutation_mutation_altered(program, self.token_functions) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Interchanging:
+            mutated_gen = [mutation.interchanging_mutation(program) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Scramble:
+            mutated_gen = [mutation.scramble_mutation(program) for program in gen]
+
+        elif self.mutation_type == MutationMethods.Reversing:
+            mutated_gen = [mutation.reversing_mutation(program) for program in gen]
+
+        elif self.mutation_type == MutationMethods.AlteredOneMutationLoops:
+            mutated_gen = [mutation.one_mutation_mutation_altered_higher_loop_chance(program, self.token_functions, self.loop_token_functions) for program in gen]
+
         return mutated_gen
 
     # -- Breed Next Generation
@@ -100,6 +204,11 @@ class VanillaGPReworked(SearchAlgorithm):
     def setup(self, training_examples: List[Example], trans_tokens: set[Token], bool_tokens: set[Token]):
         self.token_functions = [token for token in list(trans_tokens)] + invent2(trans_tokens, bool_tokens,
                                                                                  self.MAX_TOKEN_FUNCTION_DEPTH)
+
+        for token in self.token_functions:
+            if "while" in token.to_formatted_string():
+                self.loop_token_functions.append(token)
+
         self.training_examples = training_examples
 
         # Set the overall best results to the performance of the initial (empty) best program Program([])
